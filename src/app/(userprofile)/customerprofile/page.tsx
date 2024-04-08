@@ -38,16 +38,16 @@ function CustomerProfile() {
   return (
     <>
       <div className="w-full h-full px-5 ">
-        <div className="w-full flex justify-end items-center h-12 pt-1 ">
+        {/* <div className="w-full flex justify-end items-center h-12 pt-1 ">
           <div className="w-32  text-center text-zinc-400 font-mono">
             you gave
           </div>
           <div className="w-32 text-center text-zinc-400 font-mono">
             you got
           </div>
-        </div>
+        </div> */}
 
-        <ScrollArea className="w-full">
+        <ScrollArea className="w-full ">
           {data.map((data) => (
             <Link href={`/customer/${data._id}`}>
               <User

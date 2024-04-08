@@ -8,7 +8,7 @@ export default function HomeLayout({
   return (
     <div className="w-full h-screen flex flex-col">
       <Nav></Nav>
-      <div className="w-full flex-1">{children}</div>
+      <div className="w-full flex-1 ">{children}</div>
     </div>
   );
 }

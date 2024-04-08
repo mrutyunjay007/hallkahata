@@ -4,7 +4,7 @@ import React from "react";
 
 function Sellers() {
   return (
-    <div className="w-full h-full p-5">
+    <div className="w-full rounded-t-3xl bg-white h-full p-5">
       <ScrollArea className="w-full  h-full">
         <Connection></Connection>
         <Connection></Connection>
