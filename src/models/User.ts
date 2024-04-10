@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface User extends Document {
   userName: string;
   phoneNumber: number;
+  profilePic: string;
   password: string;
   verifyCode: string;
 }
@@ -23,6 +24,7 @@ const UserSchema: Schema<User> = new mongoose.Schema({
     type: String,
     required: [true, "Password is required"],
   },
+  profilePic: String,
   verifyCode: {
     type: String,
   },
