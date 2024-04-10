@@ -1,3 +1,4 @@
+import dbConnection from "@/lib/dbConnect";
 import Nav from "./components/Nav";
 
 export default function HomeLayout({
