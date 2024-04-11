@@ -4,7 +4,7 @@ export const userFullName = z
   .string()
   .min(3, "User name must be at least 3 characters");
 
-export const password = z
+export const userPassword = z
   .string()
   .min(8, "Password must be at least 8 characters")
   .regex(
@@ -12,9 +12,6 @@ export const password = z
     "Password must contain at least one letter, one number, and one special character"
   );
 
-export const phoneNumber = z
+export const userPhoneNumber = z
   .string()
-  .regex(
-    /^\d{10,}$/,
-    "Phone number must be numeric and not less than 10 digits"
-  );
+  .regex(/^\d{10}$/, "Phone number must be numeric and 10 digits");
