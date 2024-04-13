@@ -16,7 +16,7 @@ function Connection({
   amount: number;
 }) {
   return (
-    <Link href={"/customerprofile"}>
+    <Link href={"/customerprofile/66b24e9c3978d838e2bf395a"}>
       <div className="w-full h-[5.1rem] mt-2 px-3 flex justify-between items-center border-2 border-zinc-600 rounded-lg cursor-pointer">
         <span className="flex justify-center items-center gap-2">
           <span>

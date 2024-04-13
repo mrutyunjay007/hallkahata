@@ -1,10 +1,10 @@
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import React from "react";
-import User from "../components/User";
+import User from "../../components/User";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-function SellerProfile() {
+function SellerProfile({ params }: { params: { userId: string } }) {
   const data = [
     {
       _id: "bcsha54484",

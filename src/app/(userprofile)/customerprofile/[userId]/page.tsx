@@ -1,10 +1,13 @@
 import React from "react";
-import User from "../components/User";
+import User from "../../components/User";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import Link from "next/link";
 
-function CustomerProfile() {
+function CustomerProfile({ params }: { params: { userId: string } }) {
   // sample data
+
+  console.log(params);
+
   const data = [
     {
       _id: "bcsha54484",
