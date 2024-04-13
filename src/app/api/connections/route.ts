@@ -36,6 +36,7 @@ export async function GET(request: Request) {
               $project: {
                 userName: 1,
                 _id: 1,
+                profilePic: 1,
               },
             },
           ],
@@ -61,6 +62,7 @@ export async function GET(request: Request) {
               $project: {
                 userName: 1,
                 _id: 1,
+                profilePic: 1,
               },
             },
           ],

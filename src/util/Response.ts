@@ -15,3 +15,16 @@ export default function Response(
     }
   );
 }
+
+export function ResponseServerError(message:string){
+
+return NextResponse.json(
+    {
+      success:false,
+      message,
+    },
+    {
+      status:500,
+    }
+  );
+}
