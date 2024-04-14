@@ -1,20 +1,26 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IConnection extends Document {
-  seller: Schema.Types.ObjectId;
-  customer: Schema.Types.ObjectId;
+  sellerNumber: string;
+  customerNumber: string;
+  customerName: string;
   amount: number;
 }
 
 const ConnectionSchema: Schema<IConnection> = new mongoose.Schema({
-  seller: {
-    type: Schema.Types.ObjectId,
+  sellerNumber: {
+    type: String,
     ref: "User",
   },
-  customer: {
-    type: Schema.Types.ObjectId,
+  customerNumber: {
+    type: String,
     ref: "User",
   },
+
+  customerName: {
+    type: String,
+  },
+
   amount: Number,
 });
 

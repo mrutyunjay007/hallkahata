@@ -2,7 +2,7 @@ import dbConnection from "@/lib/dbConnect";
 import BillModel from "@/models/Bill";
 import Response, { ResponseServerError } from "@/util/Response";
 import mongoose from "mongoose";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   //connect db
@@ -23,21 +23,21 @@ export async function GET(request: Request) {
       {
         $lookup: {
           from: "users",
-          localField: "seller",
-          foreignField: "_id",
+          localField: "sellerNumber",
+          foreignField: "phoneNumber",
           as: "seller",
           pipeline: [
             {
               $project: {
                 userName: 1,
-                _id: 1,
+                phoneNumber: 1,
               },
             },
           ],
         },
       },
       {
-        //flatten array
+        //   //flatten array
         $addFields: {
           seller: {
             $arrayElemAt: ["$seller", 0],
@@ -48,14 +48,14 @@ export async function GET(request: Request) {
       {
         $lookup: {
           from: "users",
-          localField: "customer",
-          foreignField: "_id",
+          localField: "customerNumber",
+          foreignField: "phoneNumber",
           as: "customer",
           pipeline: [
             {
               $project: {
                 userName: 1,
-                _id: 1,
+                phoneNumber: 1,
               },
             },
           ],
@@ -67,6 +67,28 @@ export async function GET(request: Request) {
           customer: {
             $arrayElemAt: ["$customer", 0],
           },
+        },
+      },
+      {
+        $addFields: {
+          customer: {
+            $ifNull: [
+              "$customer",
+              {
+                userName: "$customerName",
+                phoneNumber: "$customerNumber",
+              },
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          seller: 1,
+          customer: 1,
+          amount: 1,
+          createdAt: 1,
         },
       },
     ]);
@@ -87,5 +109,38 @@ export async function GET(request: Request) {
     );
   } catch (error) {
     return ResponseServerError("bill not present!");
+  }
+}
+
+export async function POST(request: Request) {
+  await dbConnection();
+  try {
+    const { customerNumber, sellerNumber, customerName, amount } =
+      await request.json();
+
+    //create new Bill
+    const newBill = await BillModel.create({
+      sellerNumber,
+      customerName,
+      customerNumber,
+      createdAt: Date.now(),
+      amount,
+    });
+
+    await newBill.save();
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "bill successfully created!",
+        data: newBill,
+      },
+      {
+        status: 201,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    return ResponseServerError("bill creation failed!");
   }
 }

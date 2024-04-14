@@ -1,22 +1,26 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IBill extends Document {
-  seller: Schema.Types.ObjectId;
-  customer: Schema.Types.ObjectId;
+  sellerNumber: string;
+  customerNumber: string;
+  customerName: string;
   amount: number;
   createdAt: Date;
 }
 
 const BillSchema: Schema<IBill> = new mongoose.Schema({
-  seller: {
-    type: Schema.Types.ObjectId,
+  sellerNumber: {
+    type: String,
     ref: "User",
     required: true,
   },
-  customer: {
-    type: Schema.Types.ObjectId,
+  customerNumber: {
+    type: String,
     ref: "User",
     required: true,
+  },
+  customerName: {
+    type: String,
   },
   amount: {
     type: Number,

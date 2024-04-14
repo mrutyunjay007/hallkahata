@@ -1,10 +1,12 @@
 import dbConnection from "@/lib/dbConnect";
 import BillModel from "@/models/Bill";
 import ConnectionModel from "@/models/Connection";
-import Response from "@/util/Response";
-import { match } from "assert";
-import mongoose from "mongoose";
+
+import Response, { ResponseServerError } from "@/util/Response";
+
 import { NextResponse } from "next/server";
+
+//----------------------- Get Connection Data with Bills -------------------------
 
 export async function GET(request: Request) {
   try {
@@ -20,23 +22,23 @@ export async function GET(request: Request) {
     const connection = await ConnectionModel.aggregate([
       {
         $match: {
-          seller: new mongoose.Types.ObjectId(seller!),
-          customer: new mongoose.Types.ObjectId(customer!),
+          sellerNumber: seller,
+          customerNumber: customer,
         },
       },
       //look for seller
       {
         $lookup: {
           from: "users",
-          localField: "seller",
-          foreignField: "_id",
+          localField: "sellerNumber",
+          foreignField: "phoneNumber",
           as: "seller",
           pipeline: [
             {
               $project: {
                 userName: 1,
-                _id: 1,
-                profilePic: 1,
+                phoneNumber: 1,
+                // profilePic: 1,
               },
             },
           ],
@@ -54,15 +56,15 @@ export async function GET(request: Request) {
       {
         $lookup: {
           from: "users",
-          localField: "customer",
-          foreignField: "_id",
+          localField: "customerNumber",
+          foreignField: "phoneNumber",
           as: "customer",
           pipeline: [
             {
               $project: {
                 userName: 1,
-                _id: 1,
-                profilePic: 1,
+                phoneNumber: 1,
+                // profilePic: 1,
               },
             },
           ],
@@ -74,6 +76,28 @@ export async function GET(request: Request) {
           customer: {
             $arrayElemAt: ["$customer", 0],
           },
+        },
+      },
+      {
+        $addFields: {
+          customer: {
+            $ifNull: [
+              "$customer",
+              {
+                userName: "$customerName",
+                phoneNumber: "$customerNumber",
+              },
+            ],
+          },
+        },
+      },
+
+      {
+        $project: {
+          _id: 1,
+          seller: 1,
+          customer: 1,
+          amount: 1,
         },
       },
     ]);
@@ -86,22 +110,22 @@ export async function GET(request: Request) {
     const transectionHistory = await BillModel.aggregate([
       {
         $match: {
-          seller: new mongoose.Types.ObjectId(seller!),
-          customer: new mongoose.Types.ObjectId(customer!),
+          sellerNumber: seller,
+          customerNumber: customer,
         },
       },
       //look for seller
       {
         $lookup: {
           from: "users",
-          localField: "seller",
-          foreignField: "_id",
+          localField: "sellerNumber",
+          foreignField: "phoneNumber",
           as: "seller",
           pipeline: [
             {
               $project: {
                 userName: 1,
-                _id: 1,
+                phoneNumber: 1,
               },
             },
           ],
@@ -119,14 +143,14 @@ export async function GET(request: Request) {
       {
         $lookup: {
           from: "users",
-          localField: "customer",
-          foreignField: "_id",
+          localField: "customerNumber",
+          foreignField: "phoneNumber",
           as: "customer",
           pipeline: [
             {
               $project: {
                 userName: 1,
-                _id: 1,
+                phoneNumber: 1,
               },
             },
           ],
@@ -138,6 +162,28 @@ export async function GET(request: Request) {
           customer: {
             $arrayElemAt: ["$customer", 0],
           },
+        },
+      },
+      {
+        $addFields: {
+          customer: {
+            $ifNull: [
+              "$customer",
+              {
+                userName: "$customerName",
+                phoneNumber: "$customerNumber",
+              },
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          seller: 1,
+          customer: 1,
+          amount: 1,
+          createdAt: 1,
         },
       },
     ]);
@@ -155,5 +201,48 @@ export async function GET(request: Request) {
   } catch (error) {
     console.log(error);
     return Response(false, "no such connection", 500);
+  }
+}
+
+//----------------------- Create new Connection -------------------------
+
+// Seller can only create connection
+export async function POST(request: Request) {
+  //connect db
+  await dbConnection();
+  try {
+    const { customerNumber, sellerNumber, customerName } = await request.json();
+
+    const connection = await ConnectionModel.findOne({
+      $and: [{ customerNumber }, { sellerNumber }],
+    });
+
+    if (connection) {
+      return Response(false, "connection already present", 400);
+    }
+
+    //create new connection
+    const newConnection = await ConnectionModel.create({
+      sellerNumber,
+      customerNumber,
+      customerName,
+      amount: 0,
+    });
+
+    await newConnection.save();
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: newConnection,
+        message: "contection creation succesfull!",
+      },
+      {
+        status: 201,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    return ResponseServerError("connection creation failed!");
   }
 }
