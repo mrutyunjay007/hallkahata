@@ -16,17 +16,53 @@ import {
 } from "@/components/ui/popover";
 
 import TextArea from "@/components/TextArea";
+import axios from "axios";
+import { amountOfBill } from "@/schema/amountSchema";
+import { toast } from "@/components/ui/use-toast";
 
 // customer as borrower (I will get)
 function Borrower() {
-  const [date, setDate] = useState<Date>();
+  // const [date, setDate] = useState<Date>();
+  const [amount, setAmount] = useState("");
+
+  const createNewBillhandel = async (
+    customerNumber: string,
+    sellerNumber: string,
+    customerName: string,
+    amount: number
+  ) => {
+    try {
+      const { data } = await axios.post(
+        "http://localhost:3000/api/bill",
+        {
+          customerNumber,
+          sellerNumber,
+          customerName,
+          amount,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {}
+  };
 
   return (
     <div className="w-full h-full p-5">
-      <Input placeholder="Enter amount" className="p-8" />
+      <Input
+        type="number"
+        placeholder="Enter amount"
+        className="p-8"
+        onChange={(e) => {
+          e?.preventDefault();
+          setAmount(e.target.value);
+        }}
+      />
 
       <TextArea></TextArea>
-
+      {/* 
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -58,9 +94,30 @@ function Borrower() {
             initialFocus
           />
         </PopoverContent>
-      </Popover>
+      </Popover> */}
       <div className="fixed bottom-3 left-0 px-3  w-full ">
-        <Button className=" right-2 py-9 w-full bg-green-600 text-lg">
+        <Button
+          className=" right-2 py-9 w-full bg-green-600 text-lg"
+          onClick={() => {
+            const validateAmount = amountOfBill.safeParse(amount);
+
+            if (!validateAmount.success) {
+              toast({
+                variant: "destructive",
+                title: validateAmount.error.errors[0].message,
+              });
+            } else {
+              const totalAmount: number = -parseInt(amount);
+
+              createNewBillhandel(
+                "8777761382",
+                "8777761380",
+                "Sam",
+                totalAmount
+              );
+            }
+          }}
+        >
           Save
         </Button>
       </div>

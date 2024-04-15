@@ -3,13 +3,11 @@ import React from "react";
 import ProfilePic from "@/components/ProfilePic";
 
 export default function User({
-  userName,
-  date,
   amount,
+  createdAt,
 }: {
-  userName: string;
-  date: string;
   amount: number;
+  createdAt: number;
 }) {
   return (
     <div
@@ -19,12 +17,12 @@ export default function User({
     >
       <div className=" w-full flex flex-col justify-center items-start">
         <span className="flex gap-1 items-center font-bold">
-          <span>{userName}</span>
+          {/* <span>{userName}</span> */}
           <div className="  w-10 rounded-lg flex justify-center items-center   bg-sky-900 text-white text-[10px] font-bold">
-            <span className="rounded-lg">seller</span>
+            {/* <span className="rounded-lg">seller</span> */}
           </div>
         </span>
-        <span className="text-sm font-mono font-light">{date}</span>
+        <span className="text-sm font-mono font-light">{createdAt}</span>
       </div>
 
       <div className="w-full flex justify-center items-center">

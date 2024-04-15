@@ -9,24 +9,11 @@ import {
 } from "@/components/ui/card";
 import React from "react";
 
-const CustomerBill = ({ params }: { params: { billId: string } }) => {
+const CustomerBill = async ({ params }: { params: { billId: string } }) => {
   const { billId } = params;
 
-  const data = {
-    _id: "bcsha54484",
-    // TODO: in orgina : seller Id
-    seller: {
-      userId: "1",
-      userName: "Ram",
-    },
-    // TODO: in orgina : customer Id
-    customer: {
-      userId: "2",
-      userName: "sam",
-    },
-    amount: -1500,
-    createdAt: "05-07-2024",
-  };
+  const respons = await fetch(`http://localhost:3000/api/bill?bill=${billId}`);
+  const { data } = await respons.json();
 
   return (
     <div className="w-full h-full flex flex-col gap-3 justify-center items-center ">
