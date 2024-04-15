@@ -18,7 +18,7 @@ async function CustomerProfile({
 
   return (
     <>
-      <div className="w-full h-full px-5 ">
+      <div className="w-full h-full p-5 rounded-t-2xl bg-slate-100 ">
         <ScrollArea className="w-full ">
           {data.transectionHistory.map((bill: any) => (
             <Link key={bill._id} href={`/customer/${bill._id}`}>

@@ -115,8 +115,9 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   await dbConnection();
   try {
-    const { customerNumber, sellerNumber, customerName, amount } =
+    const { customerNumber, sellerNumber, customerName, amount, paymentType } =
       await request.json();
+   
 
     //create new Bill
     const newBill = await BillModel.create({
@@ -125,9 +126,11 @@ export async function POST(request: Request) {
       customerNumber,
       createdAt: Date.now(),
       amount,
+      paymentType,
     });
 
     await newBill.save();
+   
 
     return NextResponse.json(
       {

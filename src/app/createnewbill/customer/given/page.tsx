@@ -19,17 +19,25 @@ import TextArea from "@/components/TextArea";
 import axios from "axios";
 import { amountOfBill } from "@/schema/amountSchema";
 import { toast } from "@/components/ui/use-toast";
+import MethordsToPay from "../../components/MethordsToPay";
 
 // customer as borrower (I will get)
 function Borrower() {
   // const [date, setDate] = useState<Date>();
   const [amount, setAmount] = useState("");
 
+  const [paymentType, setPaymentType] = useState("cash");
+
+  const handlePaymentType = (ptype: string) => {
+    setPaymentType(ptype);
+  };
+
   const createNewBillhandel = async (
     customerNumber: string,
     sellerNumber: string,
     customerName: string,
-    amount: number
+    amount: number,
+    paymentType: string
   ) => {
     try {
       const { data } = await axios.post(
@@ -39,6 +47,7 @@ function Borrower() {
           sellerNumber,
           customerName,
           amount,
+          paymentType,
         },
         {
           headers: {
@@ -46,58 +55,33 @@ function Borrower() {
           },
         }
       );
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <div className="w-full h-full p-5">
-      <Input
-        type="number"
-        placeholder="Enter amount"
-        className="p-8"
-        onChange={(e) => {
-          e?.preventDefault();
-          setAmount(e.target.value);
-        }}
-      />
-
-      <TextArea></TextArea>
-      {/* 
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant={"outline"}
-            className={cn(
-              "w-32 h-11 mt-5 border-2 rounded-lg border-zinc-500 text-purple-600 font-semibold justify-start ",
-              !date && "text-muted-foreground"
-            )}
-          >
-            <CalendarIcon
-              className={`${
-                date ? "hidden" : "block"
-              } text-purple-600 mr-2 h-7 w-7`}
-            />
-            {date ? (
-              format(date, "dd / MM / yyyy")
-            ) : (
-              <span className=" text-purple-600 font-semibold">
-                Pick a date
-              </span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            initialFocus
-          />
-        </PopoverContent>
-      </Popover> */}
+    <div className="w-full h-full  ">
+      <div className=" w-full p-5">
+        <Input
+          type="number"
+          placeholder="Enter amount"
+          className="py-8  px-4 "
+          onChange={(e) => {
+            e?.preventDefault();
+            setAmount(e.target.value);
+          }}
+        />
+      </div>
+      <div className=" w-full px-5 ">
+        <TextArea></TextArea>
+      </div>
+      <div className=" w-full px-5">
+        <MethordsToPay handlePaymentType={handlePaymentType}></MethordsToPay>
+      </div>
       <div className="fixed bottom-3 left-0 px-3  w-full ">
         <Button
-          className=" right-2 py-9 w-full bg-green-600 text-lg"
+          className=" right-2 py-9 w-full text-lg"
           onClick={() => {
             const validateAmount = amountOfBill.safeParse(amount);
 
@@ -113,7 +97,8 @@ function Borrower() {
                 "8777761382",
                 "8777761380",
                 "Sam",
-                totalAmount
+                totalAmount,
+                paymentType
               );
             }
           }}

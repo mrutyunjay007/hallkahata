@@ -5,6 +5,7 @@ export interface IBill extends Document {
   customerNumber: string;
   customerName: string;
   amount: number;
+  paymentType: string;
   createdAt: Date;
 }
 
@@ -24,6 +25,10 @@ const BillSchema: Schema<IBill> = new mongoose.Schema({
   },
   amount: {
     type: Number,
+    required: true,
+  },
+  paymentType: {
+    type: String,
     required: true,
   },
   createdAt: {
