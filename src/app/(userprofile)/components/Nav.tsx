@@ -7,7 +7,7 @@ import PaymentTrackingForUser from "./PaymentTrackingForUser";
 function Nav() {
   return (
     <>
-      <div className=" flex gap-2  justify-between items-center w-full px-6 py-3">
+      <div className=" flex gap-2  justify-between items-center rounded-b-xl drop-shadow-lg w-full px-6 bg-[#ffc300] py-5">
         <span className="flex gap-2 items-center">
           <ProfilePic url=""></ProfilePic>
           <span className="font-bold text-sky-900">userName</span>
@@ -18,7 +18,7 @@ function Nav() {
         </span>
       </div>
       <span
-        className={` flex flex-col  justify-center items-center w-full h-32`}
+        className={` flex flex-col  justify-center items-center mt-2 w-full h-32`}
       >
         <PaymentTrackingForUser></PaymentTrackingForUser>
       </span>

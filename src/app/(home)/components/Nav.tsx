@@ -10,17 +10,19 @@ function Nav() {
 
   return (
     <>
-      <div className=" flex gap-2 items-center w-full px-6 py-3">
+      <div className=" flex gap-2 items-center w-full px-6 py-3 bg-[#ffc300]">
         <ProfilePic url=""></ProfilePic>
         <span className="font-bold">
           {`I'm a ${first ? "Seller" : "Customer"}`}
         </span>
       </div>
-      <div className={` relative flex flex-col  justify-end gap-3 w-full h-32`}>
+      <div
+        className={` relative flex flex-col  justify-end gap-3 w-full h-32 bg-[#ffc300]`}
+      >
         <PaymentTracking></PaymentTracking>
         <nav className="w-full flex justify-around px-10 pb-2 gap-4 font-bold">
           <span
-            className={`cursor-pointer ${first && "text-sky-700"}`}
+            className={`cursor-pointer ${first && "text-slate-900"}`}
             onClick={() => {
               setfirst(!first);
             }}
@@ -28,7 +30,7 @@ function Nav() {
             <Link href="/customers">Customers</Link>
           </span>
           <span
-            className={`cursor-pointer ${!first && "text-sky-700"}`}
+            className={`cursor-pointer ${!first && "text-slate-900"}`}
             onClick={() => {
               setfirst(!first);
             }}
@@ -39,7 +41,7 @@ function Nav() {
         <div
           className={` absolute bottom-0  ${
             !first ? "right-0" : "left-0"
-          } w-1/2 h-[2px] bg-sky-700 rounded-lg`}
+          } w-1/2 h-[2px] bg-slate-900 rounded-lg`}
         ></div>
       </div>
     </>

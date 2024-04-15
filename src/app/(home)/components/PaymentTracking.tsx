@@ -3,8 +3,8 @@ import React from "react";
 function PaymentTracking() {
   return (
     <div className="w-full h-[5.1rem] px-5">
-      <div className=" flex justify-around bg-white items-center w-full h-full border-2  border-sky-700 rounded-xl">
-        <div className=" w-full rounded-s-xl border-r-2 border-sky-700 h-full flex flex-col gap-1  justify-center items-center">
+      <div className=" flex justify-around bg-white items-center w-full h-full  rounded-xl">
+        <div className=" w-full rounded-s-xl border-r-2 border-zinc-300 h-full flex flex-col gap-1  justify-center items-center">
           <span className="font-semibold text-red-500 text-muted-foreground text-3xl">
             ₹ 100
           </span>
