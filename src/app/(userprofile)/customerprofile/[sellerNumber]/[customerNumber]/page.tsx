@@ -41,11 +41,15 @@ async function CustomerProfile({
             you gave
           </span>
         </Link>
-        <div className=" w-full cursor-pointer flex justify-center items-center bg-green-500 text-white font-bold text-xl h-full">
+
+        <Link
+          href={"/createnewbill/customer/gotten"}
+          className="w-full cursor-pointer flex justify-center items-center bg-green-500 text-white font-bold text-xl h-full"
+        >
           <span className="hover:scale-110 hover:ease-in-out hover:duration-100">
             you got
           </span>
-        </div>
+        </Link>
       </div>
     </>
   );

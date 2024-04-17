@@ -1,5 +1,6 @@
 import dbConnection from "@/lib/dbConnect";
 import BillModel from "@/models/Bill";
+import ConnectionModel from "@/models/Connection";
 import Response, { ResponseServerError } from "@/util/Response";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
@@ -117,7 +118,6 @@ export async function POST(request: Request) {
   try {
     const { customerNumber, sellerNumber, customerName, amount, paymentType } =
       await request.json();
-   
 
     //create new Bill
     const newBill = await BillModel.create({
@@ -130,7 +130,20 @@ export async function POST(request: Request) {
     });
 
     await newBill.save();
-   
+
+    //update connection amount
+    const currentAmount = await ConnectionModel.findOne({
+      $and: [{ customerName }, { sellerNumber }],
+    }).select({ amount: 1 });
+
+    const totalAmount = currentAmount?.amount + amount;
+
+    await ConnectionModel.updateOne(
+      {
+        $and: [{ customerName }, { sellerNumber }],
+      },
+      { amount: totalAmount }
+    );
 
     return NextResponse.json(
       {
