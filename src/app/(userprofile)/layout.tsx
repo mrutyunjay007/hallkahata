@@ -1,3 +1,4 @@
+import StoreProvider from "./StoreProvider";
 import Nav from "./components/Nav";
 
 export default function HomeLayout({
@@ -7,8 +8,10 @@ export default function HomeLayout({
 }) {
   return (
     <div className="w-full h-screen flex flex-col">
-      <Nav></Nav>
-      <div className="w-full flex-1 ">{children}</div>
+      <StoreProvider>
+        <Nav></Nav>
+        <div className="w-full flex-1 ">{children}</div>
+      </StoreProvider>
     </div>
   );
 }
