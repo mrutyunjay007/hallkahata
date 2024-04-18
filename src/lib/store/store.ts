@@ -1,8 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
+import connectionReducer from "./features/connection/connectionSlice";
 
 export const makeStore = () => {
   return configureStore({
-    reducer: {},
+    reducer: {
+      connection: connectionReducer,
+    },
   });
 };
 
