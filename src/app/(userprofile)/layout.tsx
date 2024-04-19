@@ -10,7 +10,7 @@ export default function HomeLayout({
     <div className="w-full h-screen flex flex-col">
       <StoreProvider>
         <Nav></Nav>
-        <div className="w-full flex-1 ">{children}</div>
+        <div className="w-full h-[calc(100%-17.5rem)] flex-1 ">{children}</div>
       </StoreProvider>
     </div>
   );

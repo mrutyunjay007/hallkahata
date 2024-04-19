@@ -1,8 +1,9 @@
 import React from "react";
 import User from "../../../components/User";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+
 import DataSetter from "../../../components/DataSetter";
 import Link from "next/link";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 async function CustomerProfile({
   params,
@@ -25,8 +26,8 @@ async function CustomerProfile({
         phoneNumber={data.connection.customer.userName}
       ></DataSetter>
 
-      <div className="w-full h-full p-5 rounded-t-2xl bg-slate-100 ">
-        <ScrollArea className="w-full ">
+      <div className="w-full h-full px-5 py-3 rounded-t-2xl">
+        <ScrollArea className="h-[calc(100%-6rem)] py-2 px-2 rounded-xl bg-slate-100 w-full  ">
           {data.transectionHistory.map((bill: any) => (
             <Link key={bill._id} href={`/customer/${bill._id}`}>
               <User
