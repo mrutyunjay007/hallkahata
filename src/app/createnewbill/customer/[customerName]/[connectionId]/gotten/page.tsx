@@ -1,36 +1,16 @@
 "use client";
-
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
-
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-
-import TextArea from "@/components/TextArea";
-import axios from "axios";
-import { amountOfBill } from "@/schema/amountSchema";
 import { toast } from "@/components/ui/use-toast";
-import MethordsToPay from "../../components/MethordsToPay";
+import { amountOfBill } from "@/schema/amountSchema";
+import React, { useState } from "react";
 
-// customer as borrower (I will get)
-function Borrower() {
-  // const [date, setDate] = useState<Date>();
+import MethordsToPay from "../../../../components/MethordsToPay";
+import { Button } from "@/components/ui/button";
+import axios from "axios";
+
+function Gotten() {
   const [amount, setAmount] = useState("");
-
   const [paymentType, setPaymentType] = useState("cash");
-
-  const handlePaymentType = (ptype: string) => {
-    setPaymentType(ptype);
-  };
 
   const createNewBillhandel = async (
     customerNumber: string,
@@ -60,6 +40,10 @@ function Borrower() {
     }
   };
 
+  const handlePaymentType = (ptype: string) => {
+    setPaymentType(ptype);
+  };
+
   return (
     <div className="w-full h-full  ">
       <div className=" w-full p-5">
@@ -73,9 +57,7 @@ function Borrower() {
           }}
         />
       </div>
-      <div className=" w-full px-5 ">
-        <TextArea></TextArea>
-      </div>
+
       <div className=" w-full px-5">
         <MethordsToPay handlePaymentType={handlePaymentType}></MethordsToPay>
       </div>
@@ -91,7 +73,7 @@ function Borrower() {
                 title: validateAmount.error.errors[0].message,
               });
             } else {
-              const totalAmount: number = -parseInt(amount);
+              const totalAmount: number = parseInt(amount);
 
               createNewBillhandel(
                 "8777761382",
@@ -110,4 +92,4 @@ function Borrower() {
   );
 }
 
-export default Borrower;
+export default Gotten;

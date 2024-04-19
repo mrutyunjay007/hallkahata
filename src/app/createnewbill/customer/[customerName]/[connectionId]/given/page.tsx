@@ -1,21 +1,52 @@
 "use client";
+
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
-import { amountOfBill } from "@/schema/amountSchema";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 
-import MethordsToPay from "../../components/MethordsToPay";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { format } from "date-fns";
+
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
-function Gotten() {
+import TextArea from "@/components/TextArea";
+import axios from "axios";
+import { amountOfBill } from "@/schema/amountSchema";
+import { toast } from "@/components/ui/use-toast";
+import MethordsToPay from "../../../../components/MethordsToPay";
+import { useAppDispatch } from "@/lib/store/hooks/hooks";
+import { add } from "@/lib/store/features/customerName/customerNameSlice";
+
+// customer as borrower (I will get)
+function Borrower({
+  params,
+}: {
+  params: { connectionId: string; customerName: string };
+}) {
+  const { connectionId, customerName } = params;
+
+  const dispatch = useAppDispatch();
+
   const [amount, setAmount] = useState("");
+
   const [paymentType, setPaymentType] = useState("cash");
 
+  const handlePaymentType = (ptype: string) => {
+    setPaymentType(ptype);
+  };
+
+  useEffect(() => {
+    dispatch(add({ userName: customerName }));
+  }, [connectionId]);
+
   const createNewBillhandel = async (
-    customerNumber: string,
-    sellerNumber: string,
-    customerName: string,
+    connectionId: string,
     amount: number,
     paymentType: string
   ) => {
@@ -23,9 +54,7 @@ function Gotten() {
       const { data } = await axios.post(
         "http://localhost:3000/api/bill",
         {
-          customerNumber,
-          sellerNumber,
-          customerName,
+          connectionId,
           amount,
           paymentType,
         },
@@ -38,10 +67,6 @@ function Gotten() {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const handlePaymentType = (ptype: string) => {
-    setPaymentType(ptype);
   };
 
   return (
@@ -57,7 +82,9 @@ function Gotten() {
           }}
         />
       </div>
-
+      <div className=" w-full px-5 ">
+        <TextArea></TextArea>
+      </div>
       <div className=" w-full px-5">
         <MethordsToPay handlePaymentType={handlePaymentType}></MethordsToPay>
       </div>
@@ -73,15 +100,9 @@ function Gotten() {
                 title: validateAmount.error.errors[0].message,
               });
             } else {
-              const totalAmount: number = parseInt(amount);
+              const totalAmount: number = -parseInt(amount);
 
-              createNewBillhandel(
-                "8777761382",
-                "8777761380",
-                "Sam",
-                totalAmount,
-                paymentType
-              );
+              createNewBillhandel(connectionId, totalAmount, paymentType);
             }
           }}
         >
@@ -92,4 +113,4 @@ function Gotten() {
   );
 }
 
-export default Gotten;
+export default Borrower;

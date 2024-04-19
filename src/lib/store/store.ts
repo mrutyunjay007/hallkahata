@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import connectionReducer from "./features/connection/connectionSlice";
+import customerNameReducer from "./features/customerName/customerNameSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       connection: connectionReducer,
+      costomerName: customerNameReducer,
     },
   });
 };

@@ -1,6 +1,7 @@
 import React from "react";
 import User from "../../../components/User";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import DataSetter from "../../../components/DataSetter";
 import Link from "next/link";
 
 async function CustomerProfile({
@@ -18,6 +19,12 @@ async function CustomerProfile({
 
   return (
     <>
+      <DataSetter
+        userName={data.connection.customer.userName}
+        amount={data.connection.amount}
+        phoneNumber={data.connection.customer.userName}
+      ></DataSetter>
+
       <div className="w-full h-full p-5 rounded-t-2xl bg-slate-100 ">
         <ScrollArea className="w-full ">
           {data.transectionHistory.map((bill: any) => (
@@ -34,7 +41,7 @@ async function CustomerProfile({
       </div>
       <div className=" w-full h-[6.5rem] flex gap-3 justify-end p-3 items-center fixed bottom-0">
         <Link
-          href={"/createnewbill/customer/given"}
+          href={`/createnewbill/customer/${data.connection.customer.userName}/${data.connection._id}/given`}
           className="w-full cursor-pointer flex justify-center items-center bg-red-500 text-white font-bold text-xl h-full"
         >
           <span className="hover:scale-110 hover:ease-in-out hover:duration-100">
@@ -43,7 +50,7 @@ async function CustomerProfile({
         </Link>
 
         <Link
-          href={"/createnewbill/customer/gotten"}
+          href={`/createnewbill/customer/${data.connection.customer.userName}/${data.connection._id}/gotten`}
           className="w-full cursor-pointer flex justify-center items-center bg-green-500 text-white font-bold text-xl h-full"
         >
           <span className="hover:scale-110 hover:ease-in-out hover:duration-100">

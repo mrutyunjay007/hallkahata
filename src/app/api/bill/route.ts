@@ -116,14 +116,15 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   await dbConnection();
   try {
-    const { customerNumber, sellerNumber, customerName, amount, paymentType } =
-      await request.json();
+    const { connectionId, amount, paymentType } = await request.json();
+
+    const connection = await ConnectionModel.findById({ _id: connectionId });
 
     //create new Bill
     const newBill = await BillModel.create({
-      sellerNumber,
-      customerName,
-      customerNumber,
+      sellerNumber: connection?.sellerNumber,
+      customerName: connection?.customerName,
+      customerNumber: connection?.customerNumber,
       createdAt: Date.now(),
       amount,
       paymentType,
@@ -132,15 +133,12 @@ export async function POST(request: Request) {
     await newBill.save();
 
     //update connection amount
-    const currentAmount = await ConnectionModel.findOne({
-      $and: [{ customerName }, { sellerNumber }],
-    }).select({ amount: 1 });
 
-    const totalAmount = currentAmount?.amount + amount;
+    const totalAmount = connection?.amount + amount;
 
     await ConnectionModel.updateOne(
       {
-        $and: [{ customerName }, { sellerNumber }],
+        _id: connectionId,
       },
       { amount: totalAmount }
     );
