@@ -11,9 +11,11 @@ function Nav() {
   return (
     <>
       <div className=" flex gap-2  justify-between items-center rounded-b-xl drop-shadow-lg w-full px-6 bg-[#ffc300] py-5">
-        <span className="flex gap-2 items-center">
+        <span className="flex gap-2 items-center size-10">
           <ProfilePic url=""></ProfilePic>
-          <span className="font-bold text-primary">{connection.userName}</span>
+          <div className="font-bold text-primary w-full">
+            {connection.userName}
+          </div>
         </span>
         <span className="flex gap-1 items-center font-semibold text-primary cursor-pointer">
           <span className=" ">{"remainder"}</span>

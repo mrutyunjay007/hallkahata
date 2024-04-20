@@ -1,3 +1,4 @@
+import ProfilePic from "@/components/ProfilePic";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,89 +9,99 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import React from "react";
+import { IoIosArrowDropleftCircle } from "react-icons/io";
 
-const SellerBill = ({ params }: { params: { billId: string } }) => {
+const SellerBill = async ({ params }: { params: { billId: string } }) => {
   const { billId } = params;
 
-  const data = {
-    _id: "bcsha54484",
-    // TODO: in orgina : seller Id
-    seller: {
-      userId: "1",
-      userName: "Ram",
-    },
-    // TODO: in orgina : customer Id
-    customer: {
-      userId: "2",
-      userName: "sam",
-    },
-    amount: -1500,
-    createdAt: "05-07-2024",
-  };
+  const respons = await fetch(`http://localhost:3000/api/bill?bill=${billId}`, {
+    cache: "no-store",
+  });
+  const { data } = await respons.json();
 
   return (
-    <div className="w-full h-full flex flex-col gap-3 justify-center items-center ">
-      <Card className="w-[350px]">
-        <CardHeader>
-          <CardTitle>
-            {" "}
-            <div className="w-full  flex justify-between items-center">
-              <span className="tag ">Bill</span>
-              <span className="val text-muted-foreground font-normal">
-                {billId}
-              </span>
-            </div>
-          </CardTitle>
-          <CardDescription
-            className={`font-mono font-semibold  ${
-              data.amount > 0 ? "text-green-400" : "text-red-400"
-            }`}
-          >
-            <span className="text-sm">
-              {`${data.amount > 0 ? "paid" : "unpaid"}`}
-            </span>
-          </CardDescription>
-        </CardHeader>
+    <>
+      <div className="w-full fixed top-0 p-5  flex justify-start items-center ">
+        <span>
+          <IoIosArrowDropleftCircle className="size-8 text-white" />
+        </span>{" "}
+      </div>
 
-        <CardContent>
-          {/* cutomer */}
-          <div className="w-full py-2 flex justify-between items-center text-sm text-muted-foreground">
-            <span className="tag ">customer :</span>
-            <span className="val">{data.customer.userName}</span>
-          </div>
-          {/* seller */}
-          <div className="w-full py-2 flex justify-between items-center text-sm text-muted-foreground">
-            <span className="tag ">seller :</span>
-            <span className="val">{data.seller.userName}</span>
-          </div>
-          {/* date */}
-          <div className="w-full py-2 flex justify-between items-center text-sm text-muted-foreground">
-            <span className="tag ">date :</span>
-            <span className="val">{data.createdAt}</span>
-          </div>
-        </CardContent>
-        <CardFooter>
-          {/* amount */}
-          <div className="w-full py-2 flex justify-between items-center ">
-            <span className={` tag text-sm text-muted-foreground`}>
-              Total amount :
+      <div className="w-full h-full flex items-end bg-[#ffc300]">
+        <div className="w-full h-4/5 relative rounded-t-3xl bg-white  px-2">
+          {/* profile */}
+          <span className="absolute w-full h-48 -top-24  left-0 flex justify-center items-center  ">
+            <span className="w-48 h-full rounded-full">
+              <ProfilePic url=""></ProfilePic>
             </span>
-            <span
-              className={`${
-                data.amount > 0 ? "text-green-400" : "text-red-400"
-              } val font-bold text-lg`}
-            >
-              ₹ {Math.abs(data.amount)}
-            </span>
-          </div>
-        </CardFooter>
-      </Card>
+          </span>
+
+          {/* bill */}
+          <Card className="w-full mt-28 border-none drop-shadow-none  ">
+            <div className="w-full text-center text-lg font-bold flex justify-center items-center gap-1">
+              <span>{data.customer.userName}</span>
+              <span className="text-[#ffc300]">{"is a customer"}</span>
+            </div>
+            <CardHeader className=" ">
+              <CardTitle>
+                <div className="w-full text-primary flex justify-between items-center">
+                  <span className="tag  ">Bill</span>
+                  <span className="val  font-normal text-muted-foreground">
+                    {billId}
+                  </span>
+                </div>
+              </CardTitle>
+              <CardDescription
+                className={`font-mono font-semibold text-[#ffc300] `}
+              >
+                <span className="text-sm">
+                  {`${data.amount > 0 ? "paid" : "unpaid"}`}
+                </span>
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className=" rounded-b-xl font-mono font-bold">
+              {/* cutomer */}
+              <div className="w-full py-2 flex justify-between items-center text-primary">
+                <span className="tag">customer :</span>
+                <span className="val">{data.customer.userName}</span>
+              </div>
+              {/* seller */}
+              <div className="w-full py-2 flex justify-between items-center text-primary">
+                <span className="tag ">seller :</span>
+                <span className="val">{data.seller.userName}</span>
+              </div>
+              {/* date */}
+              <div className="w-full py-2 flex justify-between items-center text-primary">
+                <span className="tag ">date :</span>
+                <span className="val">{data.createdAt}</span>
+              </div>
+            </CardContent>
+            <CardFooter className="mt-2">
+              {/* amount */}
+              <div className="w-full py-2 flex justify-between items-center ">
+                <span className={` tag  text-[#ffc300] font-bold`}>
+                  Total amount :
+                </span>
+                <span
+                  className={`${
+                    data.amount > 0 ? "text-green-400" : "text-red-400"
+                  } val font-bold text-3xl`}
+                >
+                  ₹ {Math.abs(data.amount)}
+                </span>
+              </div>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+
       {data.amount < 0 && (
-        <Button className="w-[350px] py-7 bg-purple-700 hover:bg-purple-900 font-bold">
-          Pay
-        </Button>
+        <span className="w-full fixed bottom-0 left-0 p-2 ">
+          <Button className="w-full py-7  font-bold">Pay</Button>
+        </span>
       )}
-    </div>
+    </>
   );
 };
 

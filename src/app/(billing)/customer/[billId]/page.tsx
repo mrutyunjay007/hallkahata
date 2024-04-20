@@ -27,7 +27,7 @@ const CustomerBill = async ({ params }: { params: { billId: string } }) => {
       <div className="w-full h-full flex items-end bg-[#ffc300]">
         <div className="w-full h-4/5 relative rounded-t-3xl bg-white  px-2">
           {/* profile */}
-          <span className="absolute w-full h-48 -top-24  flex justify-center items-center  ">
+          <span className="absolute w-full h-48 -top-24 left-0 flex justify-center items-center  ">
             <span className="w-48 h-full rounded-full">
               <ProfilePic url=""></ProfilePic>
             </span>
@@ -36,7 +36,7 @@ const CustomerBill = async ({ params }: { params: { billId: string } }) => {
           {/* bill */}
           <Card className="w-full mt-28 border-none drop-shadow-none  ">
             <div className="w-full text-center text-lg font-bold flex justify-center items-center gap-1">
-              <span>{"userName"}</span>
+              <span>{data.customer.userName}</span>
               <span className="text-[#ffc300]">{"is a customer"}</span>
             </div>
             <CardHeader className=" ">
@@ -90,11 +90,14 @@ const CustomerBill = async ({ params }: { params: { billId: string } }) => {
               </div>
             </CardFooter>
           </Card>
-          {data.amount < 0 && (
-            <Button className="w-[350px] py-7 font-bold">Remainder</Button>
-          )}
         </div>
       </div>
+
+      {data.amount < 0 && (
+        <span className="w-full fixed bottom-0 left-0 p-2 ">
+          <Button className="w-full py-7  font-bold">Remainder</Button>
+        </span>
+      )}
     </>
   );
 };

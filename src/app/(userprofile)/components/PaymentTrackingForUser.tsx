@@ -19,7 +19,7 @@ function PaymentTrackingForUser({ amount }: { amount: number }) {
               amount < 0 ? "text-red-500" : "text-green-500"
             }  text-muted-foreground  text-3xl`}
           >
-            ₹ {amount}
+            ₹ {Math.abs(amount)}
           </span>
           {/* <span className="text-sm  text-zinc-400">you will get</span> */}
         </div>
