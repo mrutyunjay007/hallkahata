@@ -1,3 +1,4 @@
+import Backbtn from "@/components/Backbtn";
 import ProfilePic from "@/components/ProfilePic";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Link from "next/link";
 import React from "react";
 import { IoIosArrowDropleftCircle } from "react-icons/io";
 
@@ -22,9 +24,7 @@ const SellerBill = async ({ params }: { params: { billId: string } }) => {
   return (
     <>
       <div className="w-full fixed top-0 p-5  flex justify-start items-center ">
-        <span>
-          <IoIosArrowDropleftCircle className="size-8 text-white" />
-        </span>{" "}
+        <Backbtn></Backbtn>
       </div>
 
       <div className="w-full h-full flex items-end bg-[#ffc300]">
