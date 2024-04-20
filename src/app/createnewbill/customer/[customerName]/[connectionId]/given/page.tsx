@@ -32,18 +32,16 @@ function Borrower({
   const { connectionId, customerName } = params;
 
   const dispatch = useAppDispatch();
-
   const [amount, setAmount] = useState("");
-
   const [paymentType, setPaymentType] = useState("cash");
-
-  const handlePaymentType = (ptype: string) => {
-    setPaymentType(ptype);
-  };
 
   useEffect(() => {
     dispatch(add({ userName: customerName }));
   }, [connectionId]);
+
+  const handlePaymentType = (ptype: string) => {
+    setPaymentType(ptype);
+  };
 
   const createNewBillhandel = async (
     connectionId: string,

@@ -2,20 +2,31 @@
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { amountOfBill } from "@/schema/amountSchema";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import MethordsToPay from "../../../../components/MethordsToPay";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { useAppDispatch } from "@/lib/store/hooks/hooks";
+import { add } from "@/lib/store/features/customerName/customerNameSlice";
 
-function Gotten() {
+function Gotten({
+  params,
+}: {
+  params: { connectionId: string; customerName: string };
+}) {
+  const { connectionId, customerName } = params;
+
+  const dispatch = useAppDispatch();
   const [amount, setAmount] = useState("");
   const [paymentType, setPaymentType] = useState("cash");
 
+  useEffect(() => {
+    dispatch(add({ userName: customerName }));
+  }, [connectionId]);
+
   const createNewBillhandel = async (
-    customerNumber: string,
-    sellerNumber: string,
-    customerName: string,
+    connectionId: string,
     amount: number,
     paymentType: string
   ) => {
@@ -23,9 +34,7 @@ function Gotten() {
       const { data } = await axios.post(
         "http://localhost:3000/api/bill",
         {
-          customerNumber,
-          sellerNumber,
-          customerName,
+          connectionId,
           amount,
           paymentType,
         },
@@ -75,13 +84,7 @@ function Gotten() {
             } else {
               const totalAmount: number = parseInt(amount);
 
-              createNewBillhandel(
-                "8777761382",
-                "8777761380",
-                "Sam",
-                totalAmount,
-                paymentType
-              );
+              createNewBillhandel(connectionId, totalAmount, paymentType);
             }
           }}
         >
