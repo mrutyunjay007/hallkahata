@@ -11,7 +11,9 @@ function Nav() {
   return (
     <>
       <div className=" flex gap-2 items-center w-full px-6 py-3 bg-[#ffc300]">
-        <ProfilePic url=""></ProfilePic>
+        <span className="size-10">
+          <ProfilePic url=""></ProfilePic>
+        </span>
         <span className="font-bold">
           {`I'm a ${first ? "Seller" : "Customer"}`}
         </span>

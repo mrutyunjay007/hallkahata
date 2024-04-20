@@ -17,27 +17,41 @@ function Connection({
 }) {
   return (
     <Link href={"/customerprofile/66b24e9c3978d838e2bf395a"}>
-      <div className="w-full h-[5.1rem] mt-2 px-3 flex justify-between items-center border-2 border-zinc-600 rounded-lg cursor-pointer">
-        <span className="flex justify-center items-center gap-2">
-          <span>
+      <div className="w-full h-[5.1rem] my-2  flex justify-between items-center  rounded-xl cursor-pointer">
+        <div className="w-full pl-5 h-full flex rounded-s-xl justify-start bg-[#ffc300] items-center gap-2">
+          <span className="size-10">
             <ProfilePic url={curtomerProfilePic}></ProfilePic>
           </span>
           <span className="font-bold">{customerUserName}</span>
-        </span>
-        <span
-          className={`flex flex-col h-full px-5 gap-1 justify-center items-center ${
-            amount < 0 ? "bg-red-100" : "bg-green-100"
-          }`}
-        >
+        </div>
+
+        <div className="w-full flex bg-white h-full justify-center items-center">
           <span
-            className={`text-sm  font-light ${
-              amount < 0 ? "text-red-600" : "text-green-600"
+            className={`font-mono text-muted-foreground text-sm ${
+              amount > 0 ? "text-green-600" : "text-red-500"
             }`}
           >
-            {amount < 0 ? "you will pay" : "you will get"}
+            {amount > 0 ? "you got" : "you gave"}
           </span>
-          <span className="font-bold text-3xl">₹ {Math.abs(amount)}</span>
-        </span>
+        </div>
+
+        <div className="flex h-full justify-between rounded-e-xl items-center w-full ">
+          {amount < 0 && (
+            <span className=" h-full w-full  flex justify-center items-center bg-red-100 rounded-e-xl ">
+              <span className="font-bold text-lg  text-red-500 rounded-e-xl">
+                ₹ {Math.abs(amount)}
+              </span>
+            </span>
+          )}
+
+          {amount > 0 && (
+            <span className="h-full  w-full flex rounded-e-lg  justify-center items-center bg-green-100">
+              <span className="font-bold rounded-e-lg text-lg text-green-400 ">
+                ₹ {Math.abs(amount)}
+              </span>
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );
