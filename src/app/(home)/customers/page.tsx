@@ -20,19 +20,6 @@ function Customers() {
       },
       amount: -100, // you will pay
     },
-    {
-      seller: {
-        userId: "1",
-        userName: "Ram",
-        profilePic: "",
-      },
-      customer: {
-        userId: "3",
-        userName: "hyari",
-        profilePic: "",
-      },
-      amount: 100, // you will get
-    },
   ];
 
   return (
