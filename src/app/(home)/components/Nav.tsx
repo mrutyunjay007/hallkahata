@@ -1,12 +1,32 @@
 "use client";
 import ProfilePic from "@/components/ProfilePic";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PaymentTracking from "./PaymentTracking";
+import axios from "axios";
 
 function Nav() {
   const [first, setfirst] = useState(true);
-  console.log(first);
+  const [youWillGet, setYouWillGet] = useState(0);
+  const [youWillGive, setYouWillGive] = useState(0);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:3000/api/user?userId=66b24d2e3978d838e2bf3950`
+        );
+
+        if (data.success) {
+          setYouWillGet(data.data.youWillGet);
+          setYouWillGive(data.data.youWillGive);
+        }
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
 
   return (
     <>
@@ -21,7 +41,11 @@ function Nav() {
       <div
         className={` relative flex flex-col  justify-end gap-3 w-full h-32 bg-[#ffc300]`}
       >
-        <PaymentTracking></PaymentTracking>
+        <PaymentTracking
+          youWillGet={youWillGet}
+          youWillGive={youWillGive}
+        ></PaymentTracking>
+
         <nav className="w-full flex justify-around px-10 pb-2 gap-4 font-bold">
           <span
             className={`cursor-pointer ${first && "text-slate-900"}`}

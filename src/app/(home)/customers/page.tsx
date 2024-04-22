@@ -4,33 +4,35 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Connection from "@/components/Connection";
 import Link from "next/link";
 
-function Customers() {
-  // Sample Data
-  const data = [
-    {
-      seller: {
-        userId: "1",
-        userName: "Ram",
-        profilePic: "",
-      },
-      customer: {
-        userId: "2",
-        userName: "Sam",
-        profilePic: "",
-      },
-      amount: -100, // you will pay
-    },
-  ];
+interface IConnectionCustomer {
+  _id: string;
+  sellerNumber: string;
+  amount: number;
+  customer: {
+    _id?: string;
+    userName: string;
+    phoneNumber: string;
+  };
+}
+
+async function Customers() {
+  const response = await fetch(
+    "http://localhost:3000/api/customers?number=8777761380",
+
+    { cache: "no-store" }
+  );
+  const result = await response.json();
 
   return (
     <div className="relative w-full h-full p-3">
       <ScrollArea className="w-full  h-full py-2 px-2 rounded-xl bg-slate-100">
-        {data.map((data) => (
+        {result.data.map((data: IConnectionCustomer) => (
           <Connection
-            key={data.customer.userId}
-            curtomerProfilePic={data.customer.profilePic}
-            cutomerUserId={data.customer.userId}
-            customerUserName={data.customer.userName}
+            key={data._id}
+            customerNumber={data.customer.phoneNumber}
+            sellerNumber={data.sellerNumber}
+            connectionUserName={data.customer.userName}
+            isSeller={false}
             amount={data.amount}
           ></Connection>
         ))}

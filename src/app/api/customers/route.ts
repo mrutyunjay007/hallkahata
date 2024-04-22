@@ -12,9 +12,61 @@ export async function GET(request: Request) {
 
     const userPhoneNumber = url.searchParams.get("number");
 
-    const customers = await ConnectionModel.find({
-      sellerNumber: userPhoneNumber,
-    });
+    const customers = await ConnectionModel.aggregate([
+      {
+        $match: {
+          sellerNumber: userPhoneNumber,
+          amount: { $ne: 0 },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "customerNumber",
+          foreignField: "phoneNumber",
+          as: "customer",
+          pipeline: [
+            {
+              $project: {
+                userName: 1,
+                phoneNumber: 1,
+                // profilePic: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        //flatten array
+        $addFields: {
+          customer: {
+            $arrayElemAt: ["$customer", 0],
+          },
+        },
+      },
+      {
+        $addFields: {
+          customer: {
+            $ifNull: [
+              "$customer",
+              {
+                userName: "$customerName",
+                phoneNumber: "$customerNumber",
+              },
+            ],
+          },
+        },
+      },
+
+      {
+        $project: {
+          _id: 1,
+          sellerNumber: 1,
+          customer: 1,
+          amount: 1,
+        },
+      },
+    ]);
 
     return NextResponse.json(
       {

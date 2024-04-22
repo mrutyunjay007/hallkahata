@@ -2,32 +2,37 @@ import Connection from "@/components/Connection";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import React from "react";
 
-function Sellers() {
-  // Sample Data
-  const data = [
-    {
-      seller: {
-        userId: "1",
-        userName: "Ram",
-        profilePic: "",
-      },
-      customer: {
-        userId: "2",
-        userName: "Sam",
-        profilePic: "",
-      },
-      amount: -100, // you will pay
-    },
-  ];
+interface IConnectionSeller {
+  _id: string;
+  customerNumber: string;
+  amount: number;
+  seller: {
+    _id: string;
+    userName: string;
+    phoneNumber: string;
+  };
+}
+
+async function Sellers() {
+  const response = await fetch(
+    "http://localhost:3000/api/sellers?number=8777761380",
+
+    { cache: "no-store" }
+  );
+  const result = await response.json();
+  console.log(result.data);
+  
+
   return (
     <div className="w-full h-full p-3">
       <ScrollArea className="w-full  h-full py-2 px-2 rounded-xl bg-slate-100">
-        {data.map((data) => (
+        {result.data.map((data: IConnectionSeller) => (
           <Connection
-            key={data.customer.userId}
-            curtomerProfilePic={data.customer.profilePic}
-            cutomerUserId={data.customer.userId}
-            customerUserName={data.customer.userName}
+            key={data._id}
+            customerNumber={data.customerNumber}
+            sellerNumber={data.seller.phoneNumber}
+            connectionUserName={data.seller.userName}
+            isSeller={true}
             amount={data.amount}
           ></Connection>
         ))}

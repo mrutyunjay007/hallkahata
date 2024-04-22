@@ -4,25 +4,32 @@ import ProfilePic from "./ProfilePic";
 import Link from "next/link";
 
 function Connection({
-  curtomerProfilePic,
-  cutomerUserId,
-  customerUserName,
+  customerNumber,
+  sellerNumber,
+  connectionUserName,
   amount,
+  isSeller,
 }: {
-  curtomerProfilePic: string;
-  cutomerUserId: string;
-  customerUserName: string;
-
+  customerNumber: string;
+  sellerNumber: string;
+  connectionUserName: string;
   amount: number;
+  isSeller: boolean;
 }) {
   return (
-    <Link href={"/customerprofile/66b24e9c3978d838e2bf395a"}>
+    <Link
+      href={
+        !isSeller
+          ? `/customerprofile/${sellerNumber}/${customerNumber}`
+          : `/sellerprofile/${sellerNumber}/${customerNumber}`
+      }
+    >
       <div className="w-full h-[5.1rem] my-2  flex justify-between items-center  rounded-xl cursor-pointer">
         <div className="w-full pl-5 h-full flex rounded-s-xl justify-start bg-[#ffc300] items-center gap-2">
           <span className="size-10">
-            <ProfilePic url={curtomerProfilePic}></ProfilePic>
+            <ProfilePic url={""}></ProfilePic>
           </span>
-          <span className="font-bold">{customerUserName}</span>
+          <span className="font-bold">{connectionUserName}</span>
         </div>
 
         <div className="w-full flex bg-white h-full justify-center items-center">
@@ -31,7 +38,7 @@ function Connection({
               amount > 0 ? "text-green-600" : "text-red-500"
             }`}
           >
-            {amount > 0 ? "you got" : "you gave"}
+            {amount > 0 ? "you will get" : "you will pay"}
           </span>
         </div>
 
