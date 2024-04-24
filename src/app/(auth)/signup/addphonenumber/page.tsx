@@ -15,59 +15,63 @@ import Image from "next/image";
 import Link from "next/link";
 import india from "@/../public/india.png";
 import { userPhoneNumber } from "@/schema/userSchema";
+import Backbtn from "@/components/Backbtn";
+import {
+  IoIosArrowDroprightCircle,
+  IoIosArrowRoundForward,
+} from "react-icons/io";
 
 function Addphonenumber() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState("");
   return (
-    <div className="w-full h-screen flex justify-center px-5 items-center">
-      <div>
-        <Card className="w-full md:w-[350px] ">
-          <CardHeader>
-            <CardTitle>Signup</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3">
-            <div className="flex justify-center items-center gap-2 ">
-              <div className="h-9 w-1/2  rounded-lg border-2 border-zinc-300 flex justify-center items-center gap-2 ">
-                <Image className="size-5" src={india} alt="" />
-                <span>+91</span>
-              </div>
-              <Input
-                placeholder="phone number"
-                className=" "
-                onChange={(e) => {
-                  e?.preventDefault();
-                  setPhoneNumber(e.target.value);
-                }}
-              ></Input>
-            </div>
-            {phoneNumberError.length > 0 && (
-              <span className="text-sm font-mono text-red-500 text-muted-foreground">
-                {phoneNumberError}
-              </span>
-            )}
-          </CardContent>
+    <div className="w-full flex justify-center items-center h-screen  ">
+      <div className="w-full fixed p-5 top-0 left-0 ">
+        <Backbtn color="#ffc300"></Backbtn>
 
-          <CardFooter className="w-full flex justify-end">
-            {/* <Link href="/signup/addphonenumber/verification"> */}
-            <Button
-              className="bg-sky-900"
-              onClick={() => {
-                const validatePhoneNumber =
-                  userPhoneNumber.safeParse(phoneNumber);
-                !validatePhoneNumber.success
-                  ? setPhoneNumberError(
-                      validatePhoneNumber.error.errors[0].message
-                    )
-                  : setPhoneNumberError("");
-              }}
-            >
-              Next
-            </Button>
-            {/* </Link> */}
-          </CardFooter>
-        </Card>
+        <div className="w-full mt-3 text-5xl p-5 font-bold text-primary">
+          <span>Sign</span>
+          <span className="text-[#ffc300]">up</span>
+        </div>
       </div>
+
+      <div className="w-full p-10 flex flex-col gap-10 justify-center items-center">
+        <div className=" w-full flex justify-center items-center gap-2  ">
+          <div className="h-9 w-1/2 py-8 rounded-lg  bg-white flex justify-center items-center gap-2 border-2 border-primary ">
+            <Image className="size-5" src={india} alt="" />
+            <span className="bg-white">+91</span>
+          </div>
+          <Input
+            placeholder="phone number"
+            className=" border-2 border-primary px-4 py-8"
+            onChange={(e) => {
+              e?.preventDefault();
+              setPhoneNumber(e.target.value);
+            }}
+          ></Input>
+        </div>
+        <Button className=" w-full py-8 bg-primary hover:bg-[#ffc300] font-bold text-white hover:text-primary">
+          Next
+        </Button>
+      </div>
+      {/* <div className="w-full h-32 relative flex justify-center items-center">
+        <div
+          className="w-16 h-32 flex justify-center items-center top-0 right-0 drop-shadow-md absolute bg-[#ffc300] rounded-l-full cursor-pointer"
+          // onClick={() => {
+          //   const name = userFullName.safeParse(fullName);
+          //   !name.success
+          //     ? setFullNameError(name.error.errors[0].message)
+          //     : setFullNameError("");
+
+          //   const validatePassword = userPassword.safeParse(password);
+          //   !validatePassword.success
+          //     ? setPasswordError(validatePassword.error.errors[0].message)
+          //     : setPasswordError("");
+          // }}
+        >
+          <IoIosArrowRoundForward className="size-7" />
+        </div>
+      </div> */}
     </div>
   );
 }
