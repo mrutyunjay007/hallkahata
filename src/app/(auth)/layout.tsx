@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 
-// import StoreProvider from "./StoreProvider";
+import StoreProvider from "./StoreProvider";
 
 export default function BillingLayout({
   children,
@@ -10,10 +10,7 @@ export default function BillingLayout({
   return (
     <>
       <div>
-        {/* <StoreProvider> */}
-
-        {children}
-        {/* </StoreProvider> */}
+        <StoreProvider>{children}</StoreProvider>
       </div>
       <Toaster></Toaster>
     </>
