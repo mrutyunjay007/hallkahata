@@ -18,11 +18,14 @@ import { toast } from "@/components/ui/use-toast";
 import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import { addPhoneNumber } from "@/lib/store/features/auth/authSlice";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 function Addphonenumber() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [available, setAvailable] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const route = useRouter();
 
   const dispatch = useAppDispatch();
 
@@ -47,7 +50,7 @@ function Addphonenumber() {
               return;
             }
             if (!data.success && data.data.inVerification) {
-              // TODO: go to verify page
+              route.push("/signup/addphonenumber/verification");
               return;
             }
             setLoading(false);
@@ -92,6 +95,8 @@ function Addphonenumber() {
             }}
           ></Input>
         </div>
+
+        {/* next btn */}
         <Button
           className=" w-full py-8 bg-primary hover:bg-[#ffc300] font-bold text-white hover:text-primary"
           onClick={() => {
@@ -106,6 +111,32 @@ function Addphonenumber() {
 
               if (validatePhoneNumber.success && available) {
                 dispatch(addPhoneNumber({ phoneNumber }));
+
+                // create verification code
+                (async () => {
+                  setLoading(true);
+                  try {
+                    const { data } = await axios.post(
+                      "http://localhost:3000/api/createverificationcode",
+                      {
+                        phoneNumber,
+                      },
+                      {
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                      }
+                    );
+
+                    if (data.success) {
+                      setLoading(false);
+                      route.push("/signup/addphonenumber/verification");
+                    }
+                  } catch (error) {
+                    console.log(error);
+                    setLoading(false);
+                  }
+                })();
               }
             }
           }}
