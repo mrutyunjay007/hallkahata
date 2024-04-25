@@ -1,15 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,10 +14,58 @@ import {
   IoIosArrowDroprightCircle,
   IoIosArrowRoundForward,
 } from "react-icons/io";
+import { toast } from "@/components/ui/use-toast";
+import { useAppDispatch } from "@/lib/store/hooks/hooks";
+import { addPhoneNumber } from "@/lib/store/features/auth/authSlice";
+import axios from "axios";
 
 function Addphonenumber() {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [phoneNumberError, setPhoneNumberError] = useState("");
+  const [available, setAvailable] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (phoneNumber.length === 10) {
+      const validatePhoneNumber = userPhoneNumber.safeParse(phoneNumber);
+
+      if (validatePhoneNumber.success) {
+        (async () => {
+          setLoading(true);
+          try {
+            const { data } = await axios.get(
+              `http://localhost:3000/api/verify?phoneNumber=${phoneNumber}`
+            );
+
+            if (data.success) {
+              setAvailable(true);
+              toast({
+                variant: "default",
+                title: "Available",
+              });
+              return;
+            }
+            if (!data.success && data.data.inVerification) {
+              // TODO: go to verify page
+              return;
+            }
+            setLoading(false);
+          } catch (error: any) {
+            console.log(error);
+            if (error.response.status === 400) {
+              toast({
+                variant: "destructive",
+                title: "user already been present with this phone number",
+              });
+            }
+            setLoading(false);
+          }
+        })();
+      }
+    }
+  }, [phoneNumber]);
+
   return (
     <div className="w-full flex justify-center items-center h-screen  ">
       <div className="w-full fixed p-5 top-0 left-0 ">
@@ -50,8 +92,25 @@ function Addphonenumber() {
             }}
           ></Input>
         </div>
-        <Button className=" w-full py-8 bg-primary hover:bg-[#ffc300] font-bold text-white hover:text-primary">
-          Next
+        <Button
+          className=" w-full py-8 bg-primary hover:bg-[#ffc300] font-bold text-white hover:text-primary"
+          onClick={() => {
+            if (!loading) {
+              const validatePhoneNumber =
+                userPhoneNumber.safeParse(phoneNumber);
+              !validatePhoneNumber.success &&
+                toast({
+                  variant: "destructive",
+                  title: validatePhoneNumber.error.errors[0].message,
+                });
+
+              if (validatePhoneNumber.success && available) {
+                dispatch(addPhoneNumber({ phoneNumber }));
+              }
+            }
+          }}
+        >
+          {loading ? "Loading..." : "Next"}
         </Button>
       </div>
       {/* <div className="w-full h-32 relative flex justify-center items-center">

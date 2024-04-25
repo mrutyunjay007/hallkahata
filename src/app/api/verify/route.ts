@@ -25,7 +25,7 @@ export async function GET(request: Request) {
             inVerification: true,
           },
         },
-        { status: 400 }
+        { status: 200 }
       );
     }
 
@@ -51,11 +51,14 @@ export async function GET(request: Request) {
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      message: "user available!",
-      data: { inVerification: false },
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "user available!",
+        data: { inVerification: false },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return ResponseServerError("numer code missmatched!");
   }

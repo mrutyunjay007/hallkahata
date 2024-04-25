@@ -24,9 +24,6 @@ function Signup() {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
 
-  const [fullNameError, setFullNameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-
   const dispatch = useAppDispatch();
 
   return (
