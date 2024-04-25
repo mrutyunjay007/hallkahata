@@ -47,13 +47,14 @@ function Addphonenumber() {
                 variant: "default",
                 title: "Available",
               });
+              setLoading(false);
               return;
             }
             if (!data.success && data.data.inVerification) {
               route.push("/signup/addphonenumber/verification");
+              setLoading(false);
               return;
             }
-            setLoading(false);
           } catch (error: any) {
             console.log(error);
             if (error.response.status === 400) {

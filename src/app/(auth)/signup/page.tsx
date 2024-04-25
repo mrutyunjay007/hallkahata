@@ -19,12 +19,15 @@ import { IoIosArrowRoundForward } from "react-icons/io";
 import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import { addUserNamePassword } from "@/lib/store/features/auth/authSlice";
 import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 function Signup() {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
 
   const dispatch = useAppDispatch();
+
+  const route = useRouter();
 
   return (
     <div className=" w-full flex flex-col justify-center items-center h-screen  ">
@@ -81,6 +84,7 @@ function Signup() {
 
             if (name.success && validatePassword.success) {
               dispatch(addUserNamePassword({ userName: fullName, password }));
+              route.push("/signup/addphonenumber");
             }
           }}
         >

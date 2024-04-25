@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     const verify = await VerifyModel.findOne({ phoneNumber });
 
     if (verify?.code !== code) {
-      return Response(false, "code is matched!", 400);
+      return Response(false, "code is not matched!", 400);
     }
 
     return Response(true, "code matched successfully!", 200);
