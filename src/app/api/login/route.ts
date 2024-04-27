@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import Response from "@/util/Response";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 // Login controler
 export async function POST(request: Request) {
@@ -35,8 +36,8 @@ export async function POST(request: Request) {
 
     //create token data
     const tokenData = {
-      id: user[0]._id,
-      username: user[0].username,
+      _id: user[0]._id,
+      userName: user[0].userName,
       phoneNumber: user[0].phoneNumber,
     };
 
@@ -55,8 +56,10 @@ export async function POST(request: Request) {
     );
 
     // add token in cookies
-    response.cookies.set("token", token, {
-      httpOnly: true,
+    cookies().set({
+      name: "token",
+      value: token,
+      // httpOnly: true,
     });
 
     return response;

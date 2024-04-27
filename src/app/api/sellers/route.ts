@@ -1,21 +1,24 @@
 import dbConnection from "@/lib/dbConnect";
 import ConnectionModel from "@/models/Connection";
 import { ResponseServerError } from "@/util/Response";
-import { NextResponse } from "next/server";
+import { getDataFromToken } from "@/util/getDataFromToken";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   //db connected
   dbConnection();
 
   try {
-    const url = new URL(request.url);
+    const tokenData = await getDataFromToken(request);
 
-    const userPhoneNumber = url.searchParams.get("number");
+    if (!tokenData) {
+      console.log(tokenData);
+    }
 
     const sellers = await ConnectionModel.aggregate([
       {
         $match: {
-          customerNumber: userPhoneNumber,
+          customerNumber: tokenData?.phoneNumber,
           amount: { $ne: 0 },
         },
       },

@@ -3,6 +3,8 @@ import { RiAddCircleFill } from "react-icons/ri";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Connection from "@/components/Connection";
 import Link from "next/link";
+import { GetServerSidePropsContext } from "next";
+import { cookies } from "next/headers";
 
 interface IConnectionCustomer {
   _id: string;
@@ -16,12 +18,13 @@ interface IConnectionCustomer {
 }
 
 async function Customers() {
-  const response = await fetch(
-    "http://localhost:3000/api/customers?number=8777761380",
+  const response = await fetch("http://localhost:3000/api/customers", {
+    headers: { Cookie: cookies().toString() },
+    cache: "no-cache",
+  });
 
-    { cache: "no-store" }
-  );
   const result = await response.json();
+  
 
   return (
     <div className="relative w-full h-full p-3">

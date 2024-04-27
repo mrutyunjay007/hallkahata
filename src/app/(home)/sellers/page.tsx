@@ -1,5 +1,6 @@
 import Connection from "@/components/Connection";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { cookies } from "next/headers";
 import React from "react";
 
 interface IConnectionSeller {
@@ -15,13 +16,15 @@ interface IConnectionSeller {
 
 async function Sellers() {
   const response = await fetch(
-    "http://localhost:3000/api/sellers?number=8777761380",
+    "http://localhost:3000/api/sellers",
 
-    { cache: "no-store" }
+    {
+      headers: { Cookie: cookies().toString() },
+
+      cache: "no-store",
+    }
   );
   const result = await response.json();
-  console.log(result.data);
-  
 
   return (
     <div className="w-full h-full p-3">

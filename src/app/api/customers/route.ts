@@ -1,21 +1,26 @@
 import dbConnection from "@/lib/dbConnect";
 import ConnectionModel from "@/models/Connection";
 import { ResponseServerError } from "@/util/Response";
-import { NextResponse } from "next/server";
+import { getDataFromToken } from "@/util/getDataFromToken";
+import { log } from "console";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   //db connected
-  dbConnection();
+  await dbConnection();
 
   try {
-    const url = new URL(request.url);
+    const tokenData = await getDataFromToken(request);
 
-    const userPhoneNumber = url.searchParams.get("number");
+    if (!tokenData) {
+      console.log(tokenData);
+    }
 
     const customers = await ConnectionModel.aggregate([
       {
         $match: {
-          sellerNumber: userPhoneNumber,
+          sellerNumber: tokenData?.phoneNumber,
           amount: { $ne: 0 },
         },
       },
@@ -78,7 +83,9 @@ export async function GET(request: Request) {
         status: 200,
       }
     );
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error.message);
+
     return ResponseServerError("connection not present!");
   }
 }
