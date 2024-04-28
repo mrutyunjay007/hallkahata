@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import PaymentTracking from "./PaymentTracking";
 import axios from "axios";
+import { RiNotification2Fill } from "react-icons/ri";
 
 function Nav() {
   const [first, setfirst] = useState(true);
@@ -30,13 +31,21 @@ function Nav() {
 
   return (
     <>
-      <div className=" flex gap-2 items-center w-full px-6 py-3 bg-[#ffc300]">
-        <span className="size-10">
-          <ProfilePic url=""></ProfilePic>
-        </span>
-        <span className="font-bold">
-          {`I'm a ${first ? "Seller" : "Customer"}`}
-        </span>
+      <div className=" flex gap-2 items-center justify-center w-full px-6 py-3 bg-[#ffc300]">
+        <div className="flex gap-2 items-center w-full py-3">
+          <span className="size-10">
+            <ProfilePic url=""></ProfilePic>
+          </span>
+          <span className="font-bold">
+            {`I'm a ${first ? "Seller" : "Customer"}`}
+          </span>
+        </div>
+        <div className="relative w-full flex justify-end">
+          <span className="w-3 h-3 bg-red-600 rounded-full absolute top-0 right-0 flex justify-center items-center text-white text-[12px] p-2 font-mono font-medium border-[#ffc300] ">
+            {"1"}
+          </span>
+          <RiNotification2Fill className="size-6" />
+        </div>
       </div>
       <div
         className={` relative flex flex-col  justify-end gap-3 w-full h-32 bg-[#ffc300]`}

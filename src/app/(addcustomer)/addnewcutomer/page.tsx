@@ -40,7 +40,7 @@ function AddNewCustomer() {
       );
 
       if (data.success) {
-        router.push(`/customerprofile/8777761380/${customerNumber}`);
+        router.push(`/customerprofile/${sellerNumber}/${customerNumber}`);
         return;
       }
     } catch (error: any) {

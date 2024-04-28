@@ -22,7 +22,7 @@ const CustomerBill = async ({ params }: { params: { billId: string } }) => {
   return (
     <>
       <div className="w-full fixed top-0 p-5  flex justify-start items-center ">
-        <Backbtn></Backbtn>
+        <Backbtn color="white"></Backbtn>
       </div>
       <div className="w-full h-full flex items-end bg-[#ffc300]">
         <div className="w-full h-4/5 relative rounded-t-3xl bg-white  px-2">
