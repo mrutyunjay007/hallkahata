@@ -1,7 +1,18 @@
 import React from "react";
+import Notification from "./components/notification";
 
-function page() {
-  return <div>page</div>;
+function Notifications() {
+  return (
+    <div className="px-6 mt-1">
+      <Notification></Notification>
+      <Notification></Notification>
+      <Notification></Notification>
+      <Notification></Notification>
+      <Notification></Notification>
+      <Notification></Notification>
+      <Notification></Notification>
+    </div>
+  );
 }
 
-export default page;
+export default Notifications;
