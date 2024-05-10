@@ -125,9 +125,12 @@ export async function POST(request: Request) {
       sellerNumber: connection?.sellerNumber,
       customerName: connection?.customerName,
       customerNumber: connection?.customerNumber,
-      createdAt: Date.now(),
+      aprooved: false,
+      remainder: false,
       amount,
-      paymentType,
+      paid: false,
+      paymentType: "none", // none/ online/ cash
+      createdAt: Date.now(),
     });
 
     await newBill.save();

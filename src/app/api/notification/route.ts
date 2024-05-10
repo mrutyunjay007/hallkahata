@@ -117,17 +117,16 @@ export async function POST(request: NextRequest) {
     // if notification type is payment -> delete bill and put in history
 
     if (type === "aprooval") {
-      const test = await BillModel.updateOne(
+      await BillModel.updateOne(
         { _id: billId },
         {
           aprooved: true,
         }
       );
-      console.log(test);
 
       return Response(true, "bill aprooved successfully!", 200);
     } else if (type === "remainder") {
-      await BillModel.findOneAndUpdate(billId, { remainder: true });
+      await BillModel.findOneAndUpdate(billId, { remainder: false });
       return Response(true, "remainder updated successfully!", 200);
     } else {
       await BillModel.findByIdAndDelete(billId);
