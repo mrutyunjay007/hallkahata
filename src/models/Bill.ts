@@ -4,7 +4,10 @@ export interface IBill extends Document {
   sellerNumber: string;
   customerNumber: string;
   customerName: string;
+  aprooved: boolean;
+  remainder: boolean;
   amount: number;
+  paid: boolean;
   paymentType: string;
   createdAt: Date;
 }
@@ -25,6 +28,18 @@ const BillSchema: Schema<IBill> = new mongoose.Schema({
   },
   amount: {
     type: Number,
+    required: true,
+  },
+  aprooved: {
+    type: Boolean,
+    required: true,
+  },
+  remainder: {
+    type: Boolean,
+    required: true,
+  },
+  paid: {
+    type: Boolean,
     required: true,
   },
   paymentType: {

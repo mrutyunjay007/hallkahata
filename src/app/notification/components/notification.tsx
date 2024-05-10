@@ -8,9 +8,9 @@ function Notification() {
   return (
     <div className="w-full h-[5.1rem] rounded-xl cursor-pointer mt-3 ">
       {/* notice for aprooval */}
-      {/* <AproovalNotification></AproovalNotification> */}
+      <AproovalNotification></AproovalNotification>
       {/* notice for remainder */}
-      <RemaindingNotification></RemaindingNotification>
+      {/* <RemaindingNotification></RemaindingNotification> */}
       {/* notice of payment from customer */}
       {/* <PaymentNotification></PaymentNotification>  */}
     </div>
