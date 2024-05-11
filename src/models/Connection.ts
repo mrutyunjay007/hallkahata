@@ -4,6 +4,7 @@ export interface IConnection extends Document {
   sellerNumber: string;
   customerNumber: string;
   customerName: string;
+  remainder: boolean;
   amount: number;
 }
 
@@ -15,6 +16,10 @@ const ConnectionSchema: Schema<IConnection> = new mongoose.Schema({
   customerNumber: {
     type: String,
     ref: "User",
+  },
+  remainder: {
+    type: Boolean,
+    required: true,
   },
 
   customerName: {
