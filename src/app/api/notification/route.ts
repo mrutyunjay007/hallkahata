@@ -215,6 +215,6 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.log(error.message);
 
-    return ResponseServerError("bill is not present!");
+    return ResponseServerError("bill or connection is not present!");
   }
 }
