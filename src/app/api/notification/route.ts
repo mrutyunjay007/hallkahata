@@ -1,4 +1,3 @@
-import Connection from "@/components/Connection";
 import dbConnection from "@/lib/dbConnect";
 import BillModel from "@/models/Bill";
 import ConnectionModel from "@/models/Connection";
@@ -167,23 +166,43 @@ export async function POST(request: NextRequest) {
     //id can be bill id or connection id
     const { id, type } = await request.json();
 
-    const bill = await BillModel.aggregate([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(id!),
-        },
-      },
-    ]);
-
-    if (!bill[0]) {
-      return Response(false, "bill not present!", 404);
-    }
-
-    // if notification type is aprooval -> make aproove true
+    // if notification type is aprooval -> make aproove true and update connection amount
     // if notification type is remainder -> make remainder false
-    // if notification type is payment ->  make aproove true
+    // if notification type is payment ->  make aproove true and update connection amount
 
-    if (type === "aprooval") {
+    if (type === "remainder") {
+      await ConnectionModel.findOneAndUpdate(id, { remainder: false });
+
+      return Response(true, "remainder updated successfully!", 200);
+    } else {
+      const bill = await BillModel.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(id!),
+          },
+        },
+      ]);
+
+      if (!bill[0]) {
+        return Response(false, "bill not present!", 404);
+      }
+
+      //update connection amount
+      const connection = await ConnectionModel.findOne({
+        sellerNumber: bill[0].sellerNumber,
+        customerNumber: bill[0].customerNumber,
+      });
+
+      const totalAmount = connection?.amount + bill[0].amount;
+
+      await ConnectionModel.updateOne(
+        {
+          _id: connection?._id,
+        },
+        { amount: totalAmount }
+      );
+
+      //make aproove true for aprooval and payment request
       await BillModel.updateOne(
         { _id: id },
         {
@@ -192,11 +211,6 @@ export async function POST(request: NextRequest) {
       );
 
       return Response(true, "bill aprooved successfully!", 200);
-    } else if (type === "remainder") {
-      await ConnectionModel.findOneAndUpdate(id, { remainder: false });
-      return Response(true, "remainder updated successfully!", 200);
-    } else {
-      await BillModel.updateOne({ _id: id }, { aprooved: true });
     }
   } catch (error: any) {
     console.log(error.message);
