@@ -35,9 +35,13 @@ const SellerBill = async ({ params }: { params: { billId: string } }) => {
               </span>
             </div>
           </CardTitle>
-          <CardDescription className={`font-mono font-semibold  `}>
+          <CardDescription
+            className={`font-mono font-semibold ${
+              data?.paid && "text-[ #ffc300]"
+            } `}
+          >
             <span className="text-sm">
-              {`${data.amount > 0 ? "paid" : "unpaid"}`}
+              {`${data?.paid ? "paid" : "unpaid"}`}
             </span>
           </CardDescription>
         </CardHeader>
@@ -75,7 +79,14 @@ const SellerBill = async ({ params }: { params: { billId: string } }) => {
       </div>
 
       {/* payment */}
-      <PaySingleBill></PaySingleBill>
+      {!data.paid && (
+        <PaySingleBill
+          amount={data.amount}
+          connectionId={data.connectionId}
+          billId={billId}
+          createdAt={data.createdAt}
+        ></PaySingleBill>
+      )}
     </div>
   );
 };

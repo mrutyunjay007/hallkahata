@@ -37,6 +37,10 @@ function Gotten({
           connectionId,
           amount,
           paymentType,
+          paid: true,
+          refBillId: "",
+          refCreatedAt: "",
+          bySeller: true,
         },
         {
           headers: {

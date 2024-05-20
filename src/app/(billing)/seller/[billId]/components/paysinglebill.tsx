@@ -5,15 +5,57 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MdOutlinePayment } from "react-icons/md";
 import { PiMoneyWavyBold } from "react-icons/pi";
-import { set } from "mongoose";
 
-function PaySingleBill() {
+import axios from "axios";
+
+function PaySingleBill({
+  connectionId,
+  billId,
+  amount,
+  createdAt,
+}: {
+  connectionId: string;
+  billId: string;
+  amount: number;
+  createdAt: Date;
+}) {
   const [paymentType, setPaymentType] = useState(true);
+  const [paying, setPaying] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const data = { amount: -1 };
+  async function payment() {
+    setLoading(true);
+    try {
+      const { data } = await axios.post(
+        "http://localhost:3000/api/bill",
+        {
+          connectionId,
+          amount: Math.abs(amount),
+          paymentType: paymentType ? "cash" : "online", //" "for item , cash ,online
+          paid: true,
+          refBillId: billId,
+          refCreatedAt: createdAt,
+          bySeller: false,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setLoading(false);
+      setPaying(true);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
 
   return (
-    <div className="w-full md:relative md:w-1/2 h-full flex flex-col  items-center justify-between md:justify-center">
+    <div
+      className={`w-full ${paying && "hidden"}
+       md:relative md:w-1/2 h-full flex flex-col  items-center justify-between md:justify-center`}
+    >
       {/* paymentType */}
       <div className="w-full flex flex-col justify-between gap-3 items-center">
         <Card
@@ -52,14 +94,16 @@ function PaySingleBill() {
 
       {/* pay btn */}
       <div className="w-full">
-        {" "}
-        {data.amount < 0 && (
-          <span className="w-full  md:absolute bottom-0">
-            <Button className="w-full py-10 bg-[#ffc300] text-primary text-xl hover:text-white font-black rounded-md">
-              Pay
-            </Button>
-          </span>
-        )}
+        <span className="w-full  md:absolute bottom-0">
+          <Button
+            className="w-full py-10 bg-[#ffc300] text-primary text-xl hover:text-white font-black rounded-md"
+            onClick={() => {
+              !loading && payment();
+            }}
+          >
+            {loading ? "Loading" : "Pay"}
+          </Button>
+        </span>
       </div>
     </div>
   );

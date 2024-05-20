@@ -54,7 +54,11 @@ function Borrower({
         {
           connectionId,
           amount,
-          paymentType,
+          paymentType, //" "for item , cash ,online
+          paid: false,
+          refBillId: "",
+          refCreatedAt: "",
+          bySeller: true,
         },
         {
           headers: {

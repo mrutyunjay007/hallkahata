@@ -89,6 +89,9 @@ export async function GET(request: Request) {
           seller: 1,
           customer: 1,
           amount: 1,
+          refBillId: 1,
+          refCreatedAt: 1,
+          paid: 1,
           createdAt: 1,
         },
       },
@@ -98,10 +101,16 @@ export async function GET(request: Request) {
       return Response(false, "no such bill present", 404);
     }
 
+    //get connection id
+    const connectionId = await ConnectionModel.findOne({
+      customerNumber: billData[0].customer.phoneNumber,
+      sellerNumber: billData[0].seller.phoneNumber,
+    }).select("_id");
+
     return NextResponse.json(
       {
         success: true,
-        data: billData[0],
+        data: { ...billData[0], connectionId: connectionId?._id },
         message: "bill got successfully!",
       },
       {
@@ -116,8 +125,15 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   await dbConnection();
   try {
-    const { connectionId, amount, paymentType, paid, refBillId, refCreatedAt } =
-      await request.json();
+    const {
+      connectionId,
+      amount,
+      paymentType,
+      paid,
+      refBillId,
+      refCreatedAt,
+      bySeller,
+    } = await request.json();
 
     const connection = await ConnectionModel.findById({ _id: connectionId });
 
@@ -126,7 +142,7 @@ export async function POST(request: Request) {
       sellerNumber: connection?.sellerNumber,
       customerName: connection?.customerName,
       customerNumber: connection?.customerNumber,
-      aprooved: false,
+      aprooved: bySeller && paid ? true : false,
       amount,
       paid,
       refBillId,
@@ -136,6 +152,11 @@ export async function POST(request: Request) {
     });
 
     await newBill.save();
+
+    // if refBillId is present then update its paid status to true
+    if (refBillId.length > 0) {
+      await BillModel.updateOne({ _id: refBillId }, { paid: true });
+    }
 
     return NextResponse.json(
       {

@@ -67,7 +67,7 @@ function MethordsToPay({
         }`}
         onClick={() => {
           if (!product) {
-            handlePaymentType("product");
+            handlePaymentType("");
             setCash(false);
             setOnline(false);
             setProduct(true);
