@@ -33,6 +33,7 @@ async function SellerProfile({
                 key={bill._id}
                 createdAt={bill.createdAt}
                 amount={bill.amount}
+                aprooved={bill.aprooved}
               ></User>
             </Link>
           ))}

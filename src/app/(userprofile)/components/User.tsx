@@ -1,21 +1,25 @@
 "use client";
 import React from "react";
 import ProfilePic from "@/components/ProfilePic";
+import { RiCheckDoubleFill } from "react-icons/ri";
+import { dateConverter } from "@/util/dateConverter";
 
 export default function User({
   amount,
   createdAt,
+  aprooved,
 }: {
   amount: number;
   createdAt: number;
+  aprooved: boolean;
 }) {
   return (
     <div
       className={`w-full h-[5.1rem] my-2  flex justify-between items-center  rounded-xl cursor-pointer `}
     >
-      <div className=" w-full h-full flex pl-6 rounded-s-xl flex-col justify-center bg-[#ffc300] items-start">
-        <span className="text-sm font-mono rounded-s-xl  font-light">
-          {createdAt}
+      <div className=" w-full h-full flex rounded-s-xl flex-col justify-center bg-[#ffc300] items-center">
+        <span className="w-full text-xl font-mono text-center ">
+          {dateConverter(createdAt.toString())}
         </span>
       </div>
 
@@ -25,11 +29,19 @@ export default function User({
             amount > 0 ? "text-green-600" : "text-red-500"
           }`}
         >
-          {amount > 0 ? "you got" : "you gave"}
+          {amount > 0 ? "you gave" : "you got"}
         </span>
       </div>
 
-      <div className="flex h-full justify-between rounded-e-xl items-center w-full ">
+      <div className=" relative flex h-full justify-between rounded-e-xl items-center w-full ">
+        <span>
+          <RiCheckDoubleFill
+            className={`size-5 absolute bottom-2 right-3 ${
+              aprooved ? "text-teal-400" : "text-slate-400"
+            } `}
+          />
+        </span>
+
         {amount < 0 && (
           <span className=" h-full w-full  flex justify-center items-center bg-red-100 rounded-e-xl ">
             {/* <span className="text-sm  font-light text-red-600">you will pay</span> */}

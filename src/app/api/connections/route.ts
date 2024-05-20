@@ -184,6 +184,9 @@ export async function GET(request: Request) {
           customer: 1,
           amount: 1,
           createdAt: 1,
+          aprooved: 1,
+          paid: 1,
+          paymentType: 1,
         },
       },
     ]);
