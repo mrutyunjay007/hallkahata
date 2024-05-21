@@ -8,15 +8,17 @@ const DateSetter = ({
   userName,
   amount,
   phoneNumber,
+  userType,
 }: {
   userName: string;
   amount: number;
   phoneNumber: string;
+  userType: string;
 }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(add({ userName, amount, phoneNumber }));
+    dispatch(add({ userName, amount, phoneNumber, userType }));
   }, [phoneNumber, amount, dispatch]);
 
   return <></>;

@@ -24,6 +24,7 @@ async function CustomerProfile({
         userName={data.connection.customer.userName}
         amount={data.connection.amount}
         phoneNumber={data.connection.customer.userName}
+        userType="customer"
       ></DataSetter>
 
       <div className="w-full h-full px-5 py-3 rounded-t-2xl">

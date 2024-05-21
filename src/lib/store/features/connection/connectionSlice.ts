@@ -5,12 +5,14 @@ export interface IConnection {
   userName: string;
   amount: number;
   phoneNumber: string;
+  userType: string;
 }
 
 const initialState: IConnection = {
   userName: "",
   amount: 0,
   phoneNumber: "",
+  userType: "",
 };
 
 export const connectionSlice = createSlice({
@@ -21,6 +23,7 @@ export const connectionSlice = createSlice({
       state.userName = action.payload.userName;
       state.amount = action.payload.amount;
       state.phoneNumber = action.payload.phoneNumber;
+      state.userType = action.payload.userType;
     },
   },
 });
