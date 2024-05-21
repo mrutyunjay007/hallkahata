@@ -4,7 +4,7 @@ function TextArea() {
   return (
     <textarea
       placeholder="Enter details(items,bill no.,quantity,etc)"
-      className="mt-5 w-full  p-3 border-2 rounded-lg border-primary  "
+      className=" w-full  p-3 border-2 rounded-lg border-primary h-36 resize-none  "
     ></textarea>
   );
 }

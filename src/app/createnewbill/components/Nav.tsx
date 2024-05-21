@@ -1,5 +1,6 @@
 "use client";
 
+import Backbtn from "@/components/Backbtn";
 import ProfilePic from "@/components/ProfilePic";
 import { useAppSelector } from "@/lib/store/hooks/hooks";
 import React from "react";
@@ -8,13 +9,18 @@ function Nav() {
   const userName = useAppSelector((state) => state.costomerName.userName);
 
   return (
-    <span className=" w-full flex h-[5.1rem] gap-2  py-4 px-3 items-center">
-      <ProfilePic url=""></ProfilePic>
-      <span className="font-bold  text-primary">
-        <span className="text-primary">{userName}</span>
-        <span className="text-[#ffc300]"> is a customer</span>
+    <div className=" w-full flex   py-4 px-3 justify-between items-center">
+      <span>
+        <Backbtn color="#ffc300"></Backbtn>
       </span>
-    </span>
+      <span className=" flex flex-col justify-start items-end">
+        <span className="text-lg font-bold ">{userName}</span>
+        <span className=" text-[11px] -mt-2 font-normal font-mono opacity-50">
+          {" "}
+          customer
+        </span>
+      </span>
+    </div>
   );
 }
 

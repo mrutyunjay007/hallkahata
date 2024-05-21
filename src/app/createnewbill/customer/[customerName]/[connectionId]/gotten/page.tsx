@@ -58,8 +58,8 @@ function Gotten({
   };
 
   return (
-    <div className="w-full h-full  ">
-      <div className=" w-full p-5">
+    <div className="w-full h-full  flex flex-col gap-7  items-center py-2 ">
+      <div className=" w-full px-5">
         <Input
           type="number"
           placeholder="Enter amount"
@@ -72,11 +72,14 @@ function Gotten({
       </div>
 
       <div className=" w-full px-5">
-        <MethordsToPay handlePaymentType={handlePaymentType}></MethordsToPay>
+        <MethordsToPay
+          handlePaymentType={handlePaymentType}
+          give={false}
+        ></MethordsToPay>
       </div>
       <div className="fixed bottom-3 left-0 px-3  w-full ">
         <Button
-          className=" right-2 py-9 w-full text-lg"
+          className="  py-9 w-full text-lg font-bold bg-[#ffc300] text-primary"
           onClick={() => {
             const validateAmount = amountOfBill.safeParse(amount);
 
@@ -92,7 +95,7 @@ function Gotten({
             }
           }}
         >
-          Save
+          Got
         </Button>
       </div>
     </div>
