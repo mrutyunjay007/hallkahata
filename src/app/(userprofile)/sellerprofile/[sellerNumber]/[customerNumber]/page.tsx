@@ -34,6 +34,7 @@ async function SellerProfile({
                 createdAt={bill.createdAt}
                 amount={bill.amount}
                 aprooved={bill.aprooved}
+                amISeller={false}
               ></User>
             </Link>
           ))}

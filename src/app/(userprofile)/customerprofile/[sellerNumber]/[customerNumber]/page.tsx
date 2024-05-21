@@ -35,6 +35,8 @@ async function CustomerProfile({
                 // userName={bill.customer.userName}
                 createdAt={bill.createdAt}
                 amount={bill.amount}
+                aprooved={bill.aprooved}
+                amISeller={true}
               ></User>
             </Link>
           ))}
