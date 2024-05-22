@@ -17,7 +17,6 @@ function MethordsToPay({
   const [cash, setCash] = useState(true);
   const [online, setOnline] = useState(false);
   const [product, setProduct] = useState(false);
-  console.log(give);
 
   return (
     <div
@@ -93,7 +92,7 @@ function MethordsToPay({
             className="border-2 border-primary"
             onClick={() => {
               if (!product) {
-                handlePaymentType("");
+                handlePaymentType("product");
                 setCash(false);
                 setOnline(false);
                 setProduct(true);

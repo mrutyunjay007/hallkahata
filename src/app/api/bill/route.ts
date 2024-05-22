@@ -1,9 +1,12 @@
 import dbConnection from "@/lib/dbConnect";
 import BillModel from "@/models/Bill";
 import ConnectionModel from "@/models/Connection";
+import UserModel from "@/models/User";
 import Response, { ResponseServerError } from "@/util/Response";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
+
+// ------------------------- Get all bills ----------------------
 
 export async function GET(request: Request) {
   //connect db
@@ -122,6 +125,8 @@ export async function GET(request: Request) {
   }
 }
 
+// ----------------------- Create new bill ----------------------
+
 export async function POST(request: Request) {
   await dbConnection();
   try {
@@ -137,17 +142,23 @@ export async function POST(request: Request) {
 
     const connection = await ConnectionModel.findById({ _id: connectionId });
 
+    // check if customer is present or not by seller for given loan
+    const customer =
+      bySeller &&
+      !paid &&
+      (await UserModel.exists({ phoneNumber: connection?.customerNumber }));
+
     //create new Bill
     const newBill = await BillModel.create({
       sellerNumber: connection?.sellerNumber,
       customerName: connection?.customerName,
       customerNumber: connection?.customerNumber,
-      aprooved: bySeller && paid ? true : false,
+      aprooved: (bySeller && paid) || (bySeller && !customer) ? true : false,
       amount,
       paid,
       refBillId,
       refCreatedAt,
-      paymentType, //  online/ cash
+      paymentType, // product/ online/ cash
       createdAt: Date.now(),
     });
 

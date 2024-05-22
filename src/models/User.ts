@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface User extends Document {
   userName: string;
-  phoneNumber: number;
+  phoneNumber: string;
   profilePic: string;
   password: string;
   verifyCode: string;
@@ -16,7 +16,7 @@ const UserSchema: Schema<User> = new mongoose.Schema({
     unique: true,
   },
   phoneNumber: {
-    type: Number,
+    type: String,
     required: [true, "Phone number is required"],
     unique: true,
   },

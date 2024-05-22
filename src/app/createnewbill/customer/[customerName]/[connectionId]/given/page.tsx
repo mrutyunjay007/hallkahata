@@ -42,6 +42,7 @@ function Borrower({
   const handlePaymentType = (ptype: string) => {
     setPaymentType(ptype);
   };
+  console.log(paymentType);
 
   const createNewBillhandel = async (
     connectionId: string,
