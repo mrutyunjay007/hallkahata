@@ -14,20 +14,21 @@ export async function GET(request: Request) {
     const phoneNumber = url.searchParams.get("phoneNumber");
 
     // check first in verifys
-    const verify = await VerifyModel.findOne({ phoneNumber });
+    // const verify = await VerifyModel.findOne({ phoneNumber });
+    // console.log(verify);
 
-    if (verify) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "verify your number",
-          data: {
-            inVerification: true,
-          },
-        },
-        { status: 200 }
-      );
-    }
+    // if (verify) {
+    //   return NextResponse.json(
+    //     {
+    //       success: false,
+    //       message: "verify your number",
+    //       data: {
+    //         inVerification: true,
+    //       },
+    //     },
+    //     { status: 200 }
+    //   );
+    // }
 
     //check in users
     const user = await UserModel.aggregate([

@@ -1,12 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   InputOTP,
   InputOTPGroup,
@@ -15,15 +9,23 @@ import {
 } from "@/components/ui/input-otp";
 import { toast } from "@/components/ui/use-toast";
 import { useAppSelector } from "@/lib/store/hooks/hooks";
+import { useSignUp } from "@clerk/nextjs";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 function Verification() {
-  const phoneNumber = useAppSelector((state) => state.auth.phoneNumber);
+  const { isLoaded, signUp, setActive } = useSignUp();
 
+  const phoneNumber = useAppSelector((state) => state.auth.phoneNumber);
   const route = useRouter();
+
+  useEffect(() => {
+    if (phoneNumber.length !== 10) {
+      route.push("/sign-up");
+    }
+  }, []);
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
@@ -39,26 +41,29 @@ function Verification() {
                 onComplete={(e) => {
                   (async () => {
                     try {
-                      const { data } = await axios.post(
-                        "http://localhost:3000/api/verify",
-                        {
-                          phoneNumber,
-                          code: e,
-                        },
-                        {
-                          headers: {
-                            "Content-Type": "application/json",
-                          },
-                        }
-                      );
+                      if (!isLoaded) {
+                        return;
+                      }
 
-                      if (data.success) {
-                        route.push("/login");
+                      const completeSignUp =
+                        await signUp?.attemptPhoneNumberVerification({
+                          code: e,
+                        });
+
+                      if (completeSignUp?.status !== "complete") {
+                        toast({
+                          variant: "destructive",
+                          title: JSON.stringify(completeSignUp),
+                        });
+                      }
+                      if (completeSignUp?.status === "complete") {
+                        const test = await setActive({
+                          session: completeSignUp.createdSessionId,
+                        });
+                        console.log(test);
                       }
                     } catch (error: any) {
                       if (error.response.status === 400) {
-                        console.log("hello");
-
                         toast({
                           variant: "destructive",
                           title: "code is not metching",
@@ -82,11 +87,6 @@ function Verification() {
               </InputOTP>
             </div>
           </CardContent>
-          {/* <CardFooter className="w-full flex justify-end">
-            <Link href="/signup/addphonenumber/verification">
-              <Button className="bg-sky-900">verify</Button>
-            </Link>
-          </CardFooter> */}
         </Card>
       </div>
     </div>

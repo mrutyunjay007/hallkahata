@@ -15,12 +15,17 @@ import {
   IoIosArrowRoundForward,
 } from "react-icons/io";
 import { toast } from "@/components/ui/use-toast";
-import { useAppDispatch } from "@/lib/store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { addPhoneNumber } from "@/lib/store/features/auth/authSlice";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useSignUp } from "@clerk/nextjs";
 
-function Addphonenumber() {
+function Addnewphonenumber() {
+  const { userName, password } = useAppSelector((state) => state.auth);
+
+  const { isLoaded, signUp, setActive } = useSignUp();
+
   const [phoneNumber, setPhoneNumber] = useState("");
   const [available, setAvailable] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -29,6 +34,7 @@ function Addphonenumber() {
 
   const dispatch = useAppDispatch();
 
+  //checking if phone number is available
   useEffect(() => {
     if (phoneNumber.length === 10) {
       const validatePhoneNumber = userPhoneNumber.safeParse(phoneNumber);
@@ -100,7 +106,7 @@ function Addphonenumber() {
         {/* next btn */}
         <Button
           className=" w-full py-8 bg-primary hover:bg-[#ffc300] font-bold text-white hover:text-primary"
-          onClick={() => {
+          onClick={async () => {
             if (!loading) {
               const validatePhoneNumber =
                 userPhoneNumber.safeParse(phoneNumber);
@@ -113,31 +119,17 @@ function Addphonenumber() {
               if (validatePhoneNumber.success && available) {
                 dispatch(addPhoneNumber({ phoneNumber }));
 
-                // create verification code
-                (async () => {
-                  setLoading(true);
-                  try {
-                    const { data } = await axios.post(
-                      "http://localhost:3000/api/createverificationcode",
-                      {
-                        phoneNumber,
-                      },
-                      {
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                      }
-                    );
+                // signup user by clerck
+                await signUp?.create({
+                  username: userName,
+                  phoneNumber: `+91${phoneNumber}`,
+                  password,
+                });
 
-                    if (data.success) {
-                      setLoading(false);
-                      route.push("/signup/addphonenumber/verification");
-                    }
-                  } catch (error) {
-                    console.log(error);
-                    setLoading(false);
-                  }
-                })();
+                // create verification code
+                await signUp?.preparePhoneNumberVerification({
+                  strategy: "phone_code",
+                });
               }
             }
           }}
@@ -167,4 +159,4 @@ function Addphonenumber() {
   );
 }
 
-export default Addphonenumber;
+export default Addnewphonenumber;

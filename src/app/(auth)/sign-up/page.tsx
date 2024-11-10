@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import { useState } from "react";
 
@@ -20,14 +21,35 @@ import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import { addUserNamePassword } from "@/lib/store/features/auth/authSlice";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import Addnewphonenumber from "./components/AddnewNumber";
+import Verification from "./components/Verification";
+import { set } from "mongoose";
 
 function Signup() {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
+  const [newPhoneNumber, setNewPhoneNumber] = useState(false);
+  const [verification, setVerification] = useState(false);
+  console.log(newPhoneNumber, verification);
 
   const dispatch = useAppDispatch();
 
   const route = useRouter();
+
+  if (newPhoneNumber) {
+    return (
+      <Addnewphonenumber
+        transferToVerification={() => {
+          setVerification(true);
+          setNewPhoneNumber(false);
+        }}
+      />
+    );
+  }
+
+  if (verification) {
+    return <Verification />;
+  }
 
   return (
     <div className=" w-full flex flex-col justify-center items-center h-screen  ">
@@ -84,7 +106,7 @@ function Signup() {
 
             if (name.success && validatePassword.success) {
               dispatch(addUserNamePassword({ userName: fullName, password }));
-              route.push("/signup/addphonenumber");
+              setNewPhoneNumber(true);
             }
           }}
         >

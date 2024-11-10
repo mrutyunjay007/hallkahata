@@ -21,7 +21,7 @@ import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-function Login() {
+function Signin() {
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
@@ -128,4 +128,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signin;
