@@ -67,10 +67,26 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "caret-blink": {
+          "0%,70%,100%": { opacity: "1" },
+          "20%,50%": { opacity: "0" },
+        },
+        next: {
+          "0%, 100%": {
+            transform: "translateX(0%)",
+            animationTimingFunction: "cubic-bezier(0.8,0,1,1)",
+          },
+          "50%": {
+            transform: "translateX(40%)",
+            animationTimingFunction: "cubic-bezier(0,0,0.2,1)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        next: "next 1s infinite",
+        "caret-blink": "caret-blink 1.25s ease-out infinite",
       },
       backgroundImage: {
         "zigzag-gradient":
@@ -78,6 +94,10 @@ const config = {
       },
       backgroundSize: {
         "24": "24px",
+      },
+      fontFamily: {
+        poppins: ["var(--font-poppins)"],
+        nunito: ["var(--font-nunito)"],
       },
     },
   },

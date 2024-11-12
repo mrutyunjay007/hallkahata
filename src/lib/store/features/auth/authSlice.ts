@@ -26,10 +26,14 @@ export const authSlice = createSlice({
     addPhoneNumber: (state, action: PayloadAction<{ phoneNumber: string }>) => {
       state.phoneNumber = action.payload.phoneNumber;
     },
+    removePassWord: (state) => {
+      state.password = "";
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addUserNamePassword, addPhoneNumber } = authSlice.actions;
+export const { addUserNamePassword, addPhoneNumber, removePassWord } =
+  authSlice.actions;
 
 export default authSlice.reducer;

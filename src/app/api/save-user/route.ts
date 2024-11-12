@@ -8,9 +8,10 @@ export async function POST(req: Request) {
     //connect db
     await dbConnection();
 
-    const { userName, phoneNumber, password } = await req.json();
+    const { userName, phoneNumber, userId } = await req.json();
+    console.log(req.json());
 
-    if (!password || !userName || !phoneNumber) {
+    if (!userName || !phoneNumber) {
       return NextResponse.json(
         {
           success: false,
@@ -35,15 +36,11 @@ export async function POST(req: Request) {
       );
     }
 
-    //bcrypt password
-    const newsalt = await bcrypt.genSalt(10);
-    const hashedPassword = bcrypt.hashSync(password, newsalt);
-
     //create new user
     const user = await UserModel.create({
+      userId,
       userName,
       phoneNumber,
-      password: hashedPassword,
     });
     await user.save();
 
@@ -56,8 +53,8 @@ export async function POST(req: Request) {
         status: 201,
       }
     );
-  } catch (error) {
-    console.log("signUp Error", error);
+  } catch (error: any) {
+    console.log("signUp Error", error.message);
     return NextResponse.json(
       {
         success: false,

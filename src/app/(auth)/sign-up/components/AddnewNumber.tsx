@@ -10,25 +10,34 @@ import Link from "next/link";
 import india from "@/../public/india.png";
 import { userPhoneNumber } from "@/schema/userSchema";
 import Backbtn from "@/components/Backbtn";
+import { RiLoader4Fill } from "react-icons/ri";
 import {
+  IoIosArrowDropleftCircle,
   IoIosArrowDroprightCircle,
   IoIosArrowRoundForward,
 } from "react-icons/io";
 import { toast } from "@/components/ui/use-toast";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
-import { addPhoneNumber } from "@/lib/store/features/auth/authSlice";
+import {
+  addPhoneNumber,
+  removePassWord,
+} from "@/lib/store/features/auth/authSlice";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useSignUp } from "@clerk/nextjs";
+import { Card } from "@/components/ui/card";
 
 function Addnewphonenumber({
   transferToVerification,
+  backToSignUp,
 }: {
   transferToVerification: () => void;
+  backToSignUp: () => void;
 }) {
   const { userName, password } = useAppSelector((state) => state.auth);
 
   const { isLoaded, signUp, setActive } = useSignUp();
+  console.log(isLoaded);
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [available, setAvailable] = useState(false);
@@ -82,88 +91,84 @@ function Addnewphonenumber({
   }, [phoneNumber]);
 
   return (
-    <div className="w-full flex justify-center items-center h-screen  ">
-      <div className="w-full fixed p-5 top-0 left-0 ">
-        <Backbtn color="#ffc300"></Backbtn>
-
-        <div className="w-full mt-3 text-5xl p-5 font-bold text-primary">
-          <span>Sign</span>
-          <span className="text-[#ffc300]">up</span>
-        </div>
-      </div>
-
-      <div className="w-full p-10 flex flex-col gap-10 justify-center items-center">
-        <div className=" w-full flex justify-center items-center gap-2  ">
-          <div className="h-9 w-1/2 py-8 rounded-lg  bg-white flex justify-center items-center gap-2 border-2 border-primary ">
-            <Image className="size-5" src={india} alt="" />
-            <span className="bg-white">+91</span>
-          </div>
-          <Input
-            placeholder="phone number"
-            className=" border-2 border-primary px-4 py-8"
-            onChange={(e) => {
-              e?.preventDefault();
-              setPhoneNumber(e.target.value);
+    <div className="w-full flex justify-center items-center h-screen p-5 ">
+      <Card className=" w-full md:w-96 flex flex-col justify-center items-center ">
+        <span className="w-full flex justify-start items-center p-5">
+          <IoIosArrowDropleftCircle
+            className={`size-8 text-[#ffc300] cursor-pointer`}
+            onClick={() => {
+              backToSignUp();
             }}
-          ></Input>
+          />
+        </span>
+        <div className="w-full p-9 pt-5 flex flex-col gap-5 justify-center items-center">
+          <div className="w-full flex flex-col justify-center items-start  gap-px  pt-5 pb-4   text-primary">
+            <span className={`font-poppins font-bold text-2xl`}>
+              Add phone number
+            </span>
+          </div>
+          <div className=" w-full flex justify-center items-center border-2 border-primary gap-2 py-5 px-4 rounded-xl  ">
+            <span className=" border-r-2  border-slate-300 pr-3 h-full">
+              {"+91"}
+            </span>
+
+            <Input
+              placeholder="phone number"
+              className="  px-4  border-none outline-none w-full"
+              onChange={(e) => {
+                e?.preventDefault();
+                setPhoneNumber(e.target.value);
+              }}
+            ></Input>
+          </div>
         </div>
 
         {/* next btn */}
-        <Button
-          className=" w-full py-8 bg-primary hover:bg-[#ffc300] font-bold text-white hover:text-primary"
-          onClick={() => {
-            if (!loading) {
-              const validatePhoneNumber =
-                userPhoneNumber.safeParse(phoneNumber);
-              !validatePhoneNumber.success &&
-                toast({
-                  variant: "destructive",
-                  title: validatePhoneNumber.error.errors[0].message,
-                });
-              console.log(validatePhoneNumber.success, available);
-
-              if (validatePhoneNumber.success && available) {
-                dispatch(addPhoneNumber({ phoneNumber }));
-
-                (async () => {
-                  // signup user by clerck
-                  await signUp?.create({
-                    phoneNumber: `+91${phoneNumber}`,
-                    password,
+        <div className="w-full h-28 relative flex justify-center pb-3 items-center">
+          {/* next btn */}
+          <div
+            className="w-16 h-32 flex justify-center items-center bottom-[0.35rem] right-0  absolute bg-[#ffc300] rounded-l-full cursor-pointer"
+            onClick={() => {
+              if (!loading) {
+                const validatePhoneNumber =
+                  userPhoneNumber.safeParse(phoneNumber);
+                !validatePhoneNumber.success &&
+                  toast({
+                    variant: "destructive",
+                    title: validatePhoneNumber.error.errors[0].message,
                   });
+                console.log(validatePhoneNumber.success, available);
 
-                  // create verification code
-                  await signUp?.preparePhoneNumberVerification({
-                    strategy: "phone_code",
-                  });
+                if (validatePhoneNumber.success && available) {
+                  dispatch(addPhoneNumber({ phoneNumber }));
 
-                  transferToVerification();
-                })();
+                  (async () => {
+                    // signup user by clerck
+                    await signUp?.create({
+                      firstName: userName,
+                      phoneNumber: `+91${phoneNumber}`,
+                      password,
+                    });
+                    dispatch(removePassWord());
+                    // create verification code
+                    await signUp?.preparePhoneNumberVerification({
+                      strategy: "phone_code",
+                    });
+
+                    transferToVerification();
+                  })();
+                }
               }
-            }
-          }}
-        >
-          {loading ? "Loading..." : "Next"}
-        </Button>
-      </div>
-      {/* <div className="w-full h-32 relative flex justify-center items-center">
-        <div
-          className="w-16 h-32 flex justify-center items-center top-0 right-0 drop-shadow-md absolute bg-[#ffc300] rounded-l-full cursor-pointer"
-          // onClick={() => {
-          //   const name = userFullName.safeParse(fullName);
-          //   !name.success
-          //     ? setFullNameError(name.error.errors[0].message)
-          //     : setFullNameError("");
-
-          //   const validatePassword = userPassword.safeParse(password);
-          //   !validatePassword.success
-          //     ? setPasswordError(validatePassword.error.errors[0].message)
-          //     : setPasswordError("");
-          // }}
-        >
-          <IoIosArrowRoundForward className="size-7" />
+            }}
+          >
+            {loading ? (
+              <RiLoader4Fill className="size-6 text-bold animate-spin ml-3" />
+            ) : (
+              <IoIosArrowRoundForward className="size-7 text-bold animate-next" />
+            )}
+          </div>
         </div>
-      </div> */}
+      </Card>
     </div>
   );
 }
