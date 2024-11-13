@@ -1,15 +1,20 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
+// Store auth data during sign-up
+// and after auth, current user info will be stored except password
+
 export interface IAuth {
   userName: string;
   password: string;
   phoneNumber: string;
+  iAmCustomer: boolean;
 }
 
 const initialState: IAuth = {
   userName: "",
   password: "",
   phoneNumber: "",
+  iAmCustomer: false, // after auth this will help to know that user is customer or seller
 };
 
 export const authSlice = createSlice({
@@ -29,11 +34,19 @@ export const authSlice = createSlice({
     removePassWord: (state) => {
       state.password = "";
     },
+
+    AmICustomerOrSeller: (state, action: PayloadAction<boolean>) => {
+      state.iAmCustomer = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addUserNamePassword, addPhoneNumber, removePassWord } =
-  authSlice.actions;
+export const {
+  addUserNamePassword,
+  addPhoneNumber,
+  removePassWord,
+  AmICustomerOrSeller,
+} = authSlice.actions;
 
 export default authSlice.reducer;

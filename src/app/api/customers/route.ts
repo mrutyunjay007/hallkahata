@@ -2,8 +2,7 @@ import dbConnection from "@/lib/dbConnect";
 import ConnectionModel from "@/models/Connection";
 import { ResponseServerError } from "@/util/Response";
 import { getDataFromToken } from "@/util/getDataFromToken";
-import { log } from "console";
-import { cookies } from "next/headers";
+
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {

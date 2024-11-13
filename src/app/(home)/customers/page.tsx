@@ -6,17 +6,6 @@ import Link from "next/link";
 import { GetServerSidePropsContext } from "next";
 import { cookies } from "next/headers";
 
-interface IConnectionCustomer {
-  _id: string;
-  sellerNumber: string;
-  amount: number;
-  customer: {
-    _id?: string;
-    userName: string;
-    phoneNumber: string;
-  };
-}
-
 async function Customers() {
   const response = await fetch("http://localhost:3000/api/customers", {
     headers: { Cookie: cookies().toString() },
@@ -24,11 +13,10 @@ async function Customers() {
   });
 
   const result = await response.json();
-  
 
   return (
     <div className="relative w-full h-full p-3">
-      <ScrollArea className="w-full  h-full py-2 px-2 rounded-xl bg-slate-100">
+      {/* <ScrollArea className="w-full  h-full py-2 px-2 rounded-xl bg-slate-100">
         {result.data.map((data: IConnectionCustomer) => (
           <Connection
             key={data._id}
@@ -39,7 +27,7 @@ async function Customers() {
             amount={data.amount}
           ></Connection>
         ))}
-      </ScrollArea>
+      </ScrollArea> */}
 
       <Link href="/addnewcutomer">
         <RiAddCircleFill className="size-16 absolute bottom-10 right-10 text-[#ffc300]  rounded-full hover:text-[#ffa600] hover:scale-110 hover:rotate-180 hover:ease-linear hover:duration-75 cursor-pointer " />
