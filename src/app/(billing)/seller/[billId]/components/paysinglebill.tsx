@@ -57,9 +57,9 @@ function PaySingleBill({
        md:relative md:w-1/2 h-full flex flex-col  items-center justify-between md:justify-center`}
     >
       {/* paymentType */}
-      <div className="w-full flex flex-col justify-between gap-3 items-center">
+      <div className="w-full flex flex-col justify-between gap-3 items-center font-poppins">
         <Card
-          className={`w-full h-full p-6  flex  justify-start items-center gap-4 md:drop-shadow-none drop-shadow-lg ${
+          className={`w-full h-full p-6  flex  justify-start items-center gap-4  ${
             paymentType && "bg-[#ffc300]"
           }`}
         >
@@ -76,7 +76,7 @@ function PaySingleBill({
         </Card>
 
         <Card
-          className={`w-full h-full p-6  flex  justify-start items-center gap-4 md:drop-shadow-none  drop-shadow-lg ${
+          className={`w-full h-full p-6  flex  justify-start items-center gap-4 ${
             !paymentType && "bg-[#ffc300]"
           }`}
         >

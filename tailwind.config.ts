@@ -81,11 +81,17 @@ const config = {
             animationTimingFunction: "cubic-bezier(0,0,0.2,1)",
           },
         },
+        one_rotation: {
+          to: {
+            transform: "rotate(-360deg)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         next: "next 1s infinite",
+        one_rotation: "one_rotation 0.5s ease-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
       },
       backgroundImage: {

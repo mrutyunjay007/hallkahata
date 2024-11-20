@@ -1,7 +1,8 @@
 import Connection from "@/components/Connection";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { AddCurrentUserData } from "@/lib/store/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import axios from "axios";
-import { set } from "mongoose";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { RiAddCircleFill } from "react-icons/ri";
@@ -20,6 +21,9 @@ interface IConnectionCustomer {
 function Customers() {
   const [datas, setDatas] = useState<IConnectionCustomer[]>();
 
+  const { phoneNumber } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
   // get all customers
   useEffect(() => {
     //token to cancel the request if the component unmounts
@@ -31,6 +35,8 @@ function Customers() {
         const { data } = await axios.get("http://localhost:3000/api/customers");
 
         if (data.success) {
+          phoneNumber === "" &&
+            dispatch(AddCurrentUserData(data.currentUserData));
           setDatas(data.data);
         }
       } catch (error) {
@@ -59,9 +65,11 @@ function Customers() {
         ))}
       </ScrollArea>
 
-      <Link href="/addnewcutomer">
-        <RiAddCircleFill className="size-16 fixed bottom-10 right-10 text-[#ffc300]  rounded-full hover:text-[#ffa600] hover:scale-110 hover:rotate-180 hover:ease-linear hover:duration-75 cursor-pointer " />
-      </Link>
+      {phoneNumber !== "" && (
+        <Link href={`/addnewcutomer/${phoneNumber}`}>
+          <RiAddCircleFill className="size-16 fixed bottom-10 right-10 text-[#ffc300]  rounded-full hover:text-[#ffa600] hover:scale-110 hover:rotate-180 hover:ease-linear hover:duration-75 cursor-pointer " />
+        </Link>
+      )}
     </div>
   );
 }

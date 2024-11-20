@@ -1,5 +1,7 @@
 import Connection from "@/components/Connection";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { AddCurrentUserData } from "@/lib/store/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
@@ -17,6 +19,9 @@ interface IConnectionSeller {
 function Sellers() {
   const [datas, setDatas] = useState<IConnectionSeller[]>();
 
+  const { phoneNumber } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
   // get all sellers
   useEffect(() => {
     // token to cancel the request if the component unmounts
@@ -28,6 +33,8 @@ function Sellers() {
         const { data } = await axios.get("http://localhost:3000/api/sellers");
 
         if (data.success) {
+          phoneNumber === "" &&
+            dispatch(AddCurrentUserData(data.currentUserData));
           setDatas(data.data);
         }
       } catch (error) {

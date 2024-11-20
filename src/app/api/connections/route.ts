@@ -194,7 +194,10 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         success: true,
-        data: { connection: connection[0], transectionHistory },
+        data: {
+          connection: connection[0],
+          transectionHistory: transectionHistory.reverse(),
+        },
         message: "getting data successfull!",
       },
       {

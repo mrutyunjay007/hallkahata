@@ -1,7 +1,7 @@
-function nameTrimer(name: string): string {
-  if (name.length < 5) return name;
+function nameTrimer(name: string, len: number): string {
+  if (name.length < len) return name;
 
-  const newName = name.slice(0, 5);
+  const newName = name.slice(0, len);
 
   return `${newName}...`;
 }

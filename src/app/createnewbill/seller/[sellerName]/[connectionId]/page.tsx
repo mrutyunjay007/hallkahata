@@ -1,47 +1,32 @@
 "use client";
-
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
-
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
-
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-
-import TextArea from "@/components/TextArea";
-import axios from "axios";
-import { amountOfBill } from "@/schema/amountSchema";
 import { toast } from "@/components/ui/use-toast";
-import MethordsToPay from "../../../../components/MethordsToPay";
+import { amountOfBill } from "@/schema/amountSchema";
+import React, { useEffect, useState } from "react";
+
+import MethordsToPay from "../../../components/MethordsToPay";
+import { Button } from "@/components/ui/button";
+import axios from "axios";
 import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import { add } from "@/lib/store/features/connectionName/connectionNameSlice";
+import { useRouter } from "next/navigation";
 
-// customer as borrower (I will get)
-function Borrower({
+function Pay({
   params,
 }: {
-  params: { connectionId: string; customerName: string };
+  params: { connectionId: string; sellerName: string };
 }) {
-  const { connectionId, customerName } = params;
+  const { connectionId, sellerName } = params;
 
   const dispatch = useAppDispatch();
   const [amount, setAmount] = useState("");
   const [paymentType, setPaymentType] = useState("cash");
 
-  useEffect(() => {
-    dispatch(add({ userName: customerName, userType: "customer" }));
-  }, [connectionId]);
+  const router = useRouter();
 
-  const handlePaymentType = (ptype: string) => {
-    setPaymentType(ptype);
-  };
+  useEffect(() => {
+    dispatch(add({ userName: sellerName, userType: "seller" }));
+  }, [connectionId]);
 
   const createNewBillhandel = async (
     connectionId: string,
@@ -54,11 +39,11 @@ function Borrower({
         {
           connectionId,
           amount,
-          paymentType, //" "for item , cash ,online
-          paid: false,
+          paymentType,
+          paid: true,
           refBillId: "",
           refCreatedAt: "",
-          bySeller: true,
+          bySeller: false,
         },
         {
           headers: {
@@ -66,13 +51,27 @@ function Borrower({
           },
         }
       );
+
+      if (data.success) {
+        const { sellerNumber, customerNumber } = data.data;
+        toast({
+          title: `₹ ${data.data.amount} bill created successfully`,
+          variant: "default",
+        });
+
+        router.push(`/sellerprofile/${sellerNumber}/${customerNumber}`);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handlePaymentType = (ptype: string) => {
+    setPaymentType(ptype);
+  };
+
   return (
-    <div className="w-full h-full  flex flex-col gap-7  items-center py-2  ">
+    <div className="w-full h-full  flex flex-col gap-7  items-center py-2 ">
       <div className=" w-full px-5">
         <div className=" w-full flex justify-center items-center border-2 border-primary gap-2 py-5 px-4 rounded-xl  ">
           <span className=" text-3xl font-nunito flex justify-end items-center font-bold pl-3 h-full">
@@ -90,18 +89,17 @@ function Borrower({
           ></Input>
         </div>
       </div>
-      <div className=" w-full px-5 ">
-        <TextArea></TextArea>
-      </div>
+
       <div className=" w-full px-5">
         <MethordsToPay
           handlePaymentType={handlePaymentType}
-          give={true}
+          give={false}
         ></MethordsToPay>
       </div>
-      <div className=" fixed bottom-3 left-0 px-3 w-full ">
+
+      <div className="fixed bottom-3 left-0 px-3  w-full ">
         <Button
-          className=" py-9 w-full text-lg font-bold bg-[#ffc300] text-primary "
+          className="  py-9 w-full text-lg font-bold bg-[#ffc300] text-primary"
           onClick={() => {
             const validateAmount = amountOfBill.safeParse(amount);
 
@@ -111,17 +109,17 @@ function Borrower({
                 title: validateAmount.error.errors[0].message,
               });
             } else {
-              const totalAmount: number = -parseInt(amount);
+              const totalAmount: number = parseInt(amount);
 
               createNewBillhandel(connectionId, totalAmount, paymentType);
             }
           }}
         >
-          Give
+          Pay
         </Button>
       </div>
     </div>
   );
 }
 
-export default Borrower;
+export default Pay;

@@ -164,6 +164,12 @@ export async function POST(request: Request) {
 
     await newBill.save();
 
+    //update connection amount
+    await ConnectionModel.updateOne(
+      { _id: connectionId },
+      { amount: connection?.amount + amount }
+    );
+
     // if refBillId is present then update its paid status to true
     if (refBillId.length > 0) {
       await BillModel.updateOne({ _id: refBillId }, { paid: true });

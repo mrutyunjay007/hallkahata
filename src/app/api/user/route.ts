@@ -11,13 +11,12 @@ export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
 
-    const userId = url.searchParams.get("userId");
-    console.log(userId);
+    const phoneNumber = url.searchParams.get("phoneNumber");
 
     const user = await UserModel.aggregate([
       {
         $match: {
-          _id: new mongoose.Types.ObjectId(userId!),
+          phoneNumber: phoneNumber!,
         },
       },
 

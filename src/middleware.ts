@@ -14,6 +14,8 @@ export default clerkMiddleware(async (auth, request: NextRequest) => {
 
   const currentUrl = new URL(request.url);
   const isAccessingHome = currentUrl.pathname === "/";
+  const checkPhoneNumberavailability =
+    currentUrl.pathname === "/api/verify(.*)";
 
   if (!userId && !isPublicRoute(request)) {
     await auth.protect();
@@ -21,6 +23,7 @@ export default clerkMiddleware(async (auth, request: NextRequest) => {
   }
 
   if (userId && (isPublicRoute(request) || isAccessingHome)) {
+    console.log("No,I am here!");
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

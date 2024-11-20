@@ -62,6 +62,7 @@ export async function GET(request: NextRequest) {
       {
         success: true,
         message: "user data successfully got",
+        currentUserData: tokenData,
         data: sellers,
       },
       {

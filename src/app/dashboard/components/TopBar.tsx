@@ -5,31 +5,38 @@ import { useEffect, useState } from "react";
 import PaymentTracking from "./PaymentTracking";
 import axios from "axios";
 import { RiNotification2Fill } from "react-icons/ri";
-import { useAppSelector } from "@/lib/store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
+import { getDataFromToken } from "@/util/getDataFromToken";
+import { AddCurrentUserData } from "@/lib/store/features/auth/authSlice";
 
 function TopBar() {
   const [youWillGet, setYouWillGet] = useState(0);
   const [youWillGive, setYouWillGive] = useState(0);
 
-  const iAmCustomer = useAppSelector((state) => state.auth.iAmCustomer);
+  const { iAmCustomer, phoneNumber } = useAppSelector((state) => state.auth);
 
+  const dispatch = useAppDispatch();
+
+  // fetch total amount to pay or to get, if current user phone number is present
   useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await axios.get(
-          `http://localhost:3000/api/user?userId=66b24d2e3978d838e2bf3950`
-        );
+    //iife to get total amount to pay or to get
+    phoneNumber !== "" &&
+      (async () => {
+        try {
+          const { data } = await axios.get(
+            `http://localhost:3000/api/user?phoneNumber=${phoneNumber}`
+          );
 
-        if (data.success) {
-          setYouWillGet(data.data.youWillGet);
-          setYouWillGive(data.data.youWillGive);
+          if (data.success) {
+            setYouWillGet(data.data.youWillGet);
+            setYouWillGive(data.data.youWillGive);
+          }
+          
+        } catch (error) {
+          console.log(error);
         }
-        console.log(data);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
+      })();
+  }, [phoneNumber]);
 
   return (
     <>

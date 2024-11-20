@@ -7,8 +7,8 @@ import React, { useEffect, useState } from "react";
 import MethordsToPay from "../../../../components/MethordsToPay";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { useAppDispatch } from "@/lib/store/hooks/hooks";
-import { add } from "@/lib/store/features/customerName/customerNameSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
+import { add } from "@/lib/store/features/connectionName/connectionNameSlice";
 
 function Gotten({
   params,
@@ -22,7 +22,7 @@ function Gotten({
   const [paymentType, setPaymentType] = useState("cash");
 
   useEffect(() => {
-    dispatch(add({ userName: customerName }));
+    dispatch(add({ userName: customerName, userType: "customer" }));
   }, [connectionId]);
 
   const createNewBillhandel = async (
@@ -60,15 +60,21 @@ function Gotten({
   return (
     <div className="w-full h-full  flex flex-col gap-7  items-center py-2 ">
       <div className=" w-full px-5">
-        <Input
-          type="number"
-          placeholder="Enter amount"
-          className="py-8  px-4 "
-          onChange={(e) => {
-            e?.preventDefault();
-            setAmount(e.target.value);
-          }}
-        />
+        <div className=" w-full flex justify-center items-center border-2 border-primary gap-2 py-5 px-4 rounded-xl  ">
+          <span className=" text-3xl font-nunito flex justify-end items-center font-bold pl-3 h-full">
+            {"₹"}
+          </span>
+
+          <Input
+            type="number"
+            placeholder="Enter amount"
+            className="  px-4 border-none outline-none w-full font-poppins font-semibold"
+            onChange={(e) => {
+              e?.preventDefault();
+              setAmount(e.target.value);
+            }}
+          ></Input>
+        </div>
       </div>
 
       <div className=" w-full px-5">
@@ -77,7 +83,8 @@ function Gotten({
           give={false}
         ></MethordsToPay>
       </div>
-      <div className="fixed bottom-3 left-0 px-3  w-full ">
+
+      <div className="fixed bottom-3 left-0 px-3 w-full ">
         <Button
           className="  py-9 w-full text-lg font-bold bg-[#ffc300] text-primary"
           onClick={() => {
@@ -95,7 +102,7 @@ function Gotten({
             }
           }}
         >
-          Got
+          Get
         </Button>
       </div>
     </div>

@@ -31,7 +31,7 @@ function Connection({
             <ProfilePic url={""}></ProfilePic>
           </span>
           <span className="font-bold text-sm font-poppins">
-            {nameTrimer(connectionUserName)}
+            {nameTrimer(connectionUserName, 5)}
           </span>
         </div>
 
@@ -39,9 +39,8 @@ function Connection({
 
         <div className="w-full flex bg-white h-full justify-center items-center">
           <span
-            className={`font-mono text-muted-foreground text-xs md:text-sm ${
-              amount > 0 ? "text-green-600" : "text-red-500"
-            }`}
+            className={`font-mono text-muted-foreground text-xs md:text-sm 
+             `}
           >
             {amount > 0 ? "you will get" : "you will pay"}
           </span>

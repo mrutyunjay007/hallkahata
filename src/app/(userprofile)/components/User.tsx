@@ -17,7 +17,7 @@ export default function User({
 }) {
   return (
     <div
-      className={`w-full h-[5.1rem] my-2  flex justify-between items-center  rounded-xl cursor-pointer `}
+      className={`w-full h-[5.1rem] my-2 font-poppins flex justify-between items-center  rounded-xl cursor-pointer `}
     >
       {/* date */}
       <div className=" w-full h-full flex rounded-s-xl flex-col justify-center bg-[#ffc300] items-center">
