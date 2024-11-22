@@ -1,4 +1,6 @@
 import Connection from "@/components/Connection";
+import BallBounce from "@/components/Loaders/BallBounce";
+import DataLoader from "@/components/Loaders/DataLoader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AddCurrentUserData } from "@/lib/store/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
@@ -20,7 +22,7 @@ interface IConnectionCustomer {
 
 function Customers() {
   const [datas, setDatas] = useState<IConnectionCustomer[]>();
-
+  const [isLoading, setLoading] = useState(false);
   const { phoneNumber } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
@@ -28,6 +30,8 @@ function Customers() {
   useEffect(() => {
     //token to cancel the request if the component unmounts
     const cancelToken = axios.CancelToken.source();
+
+    setLoading(true);
 
     //iife to collect all customers data
     (async () => {
@@ -38,6 +42,7 @@ function Customers() {
           phoneNumber === "" &&
             dispatch(AddCurrentUserData(data.currentUserData));
           setDatas(data.data);
+          setLoading(false);
         }
       } catch (error) {
         console.log(error);
@@ -49,6 +54,17 @@ function Customers() {
       cancelToken.cancel();
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full p-3 ">
+        <div className="w-full  h-full flex justify-center items-center py-2 px-2 bg-slate-100 rounded-xl">
+          {/* <BallBounce size={"size-5"} bg={"bg-slate-200"}></BallBounce> */}
+          <DataLoader numberOfItems={3}></DataLoader>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-full p-3 ">

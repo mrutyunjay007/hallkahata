@@ -8,6 +8,7 @@ import Backbtn from "@/components/Backbtn";
 import nameTrimer from "@/util/nameTrimer";
 import { TbReceiptRupee } from "react-icons/tb";
 import { useRouter } from "next/navigation";
+import BallBounce from "@/components/Loaders/BallBounce";
 
 function Nav() {
   const connection = useAppSelector((state) => state.connection);
@@ -29,9 +30,13 @@ function Nav() {
           <ProfilePic url=""></ProfilePic>
           <span className=" flex w-full flex-col justify-start items-start">
             <span className="text-lg font-bold font-poppins ">
-              {connection.userName !== undefined
-                ? nameTrimer(connection?.userName!, 10)
-                : "loding..."}
+              {connection.userName !== undefined ? (
+                nameTrimer(connection?.userName!, 10)
+              ) : (
+                <div className=" py-4">
+                  <BallBounce size="size-3" bg="bg-slate-300"></BallBounce>
+                </div>
+              )}
             </span>
             <span className=" w-40 text-[11px] -mt-1 font-normal font-mono opacity-85">
               {`${connection.userType}`}
@@ -48,13 +53,13 @@ function Nav() {
                 );
               }}
             >
-              <span>{"pay"}</span>
-              <TbReceiptRupee className="size-7 " />
+              <span className="text-blue-700">{"pay"}</span>
+              <TbReceiptRupee className="size-7 text-blue-700 animate-bounce" />
             </span>
           ) : (
-            <span className="font-bold flex justify-center items-center font-nunito text-xl">
+            <span className="font-bold flex justify-center text-blue-700 items-center font-nunito text-xl">
               <span>{"remaind"}</span>
-              <RiSendPlane2Line className="size-7 " />
+              <RiSendPlane2Line className="size-7 animate-next" />
             </span>
           )}
         </span>

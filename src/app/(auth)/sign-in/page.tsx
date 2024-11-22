@@ -122,7 +122,7 @@ function Signin() {
                         session: completeSignIn?.createdSessionId,
                       });
 
-                      route.push("/customers");
+                      route.push("/dashboard");
                     }
                   } catch (error: any) {
                     toast({

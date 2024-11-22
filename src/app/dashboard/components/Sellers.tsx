@@ -1,4 +1,5 @@
 import Connection from "@/components/Connection";
+import DataLoader from "@/components/Loaders/DataLoader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AddCurrentUserData } from "@/lib/store/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
@@ -18,7 +19,7 @@ interface IConnectionSeller {
 
 function Sellers() {
   const [datas, setDatas] = useState<IConnectionSeller[]>();
-
+  const [isLoading, setLoading] = useState(false);
   const { phoneNumber } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
@@ -27,6 +28,8 @@ function Sellers() {
     // token to cancel the request if the component unmounts
     const cancelToken = axios.CancelToken.source();
 
+    setLoading(true);
+    
     // iife to collect all sellers data
     (async () => {
       try {
@@ -36,6 +39,7 @@ function Sellers() {
           phoneNumber === "" &&
             dispatch(AddCurrentUserData(data.currentUserData));
           setDatas(data.data);
+          setLoading(false);
         }
       } catch (error) {
         console.log(error);
@@ -47,6 +51,16 @@ function Sellers() {
       cancelToken.cancel();
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full p-3 ">
+        <div className="w-full  h-full flex justify-center items-center py-2 px-2 bg-slate-100 rounded-xl">
+          <DataLoader numberOfItems={3}></DataLoader>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full p-3">

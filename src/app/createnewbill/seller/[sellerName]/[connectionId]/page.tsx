@@ -3,13 +3,14 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { amountOfBill } from "@/schema/amountSchema";
 import React, { useEffect, useState } from "react";
-
+import Confetti from "react-confetti";
 import MethordsToPay from "../../../components/MethordsToPay";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import { add } from "@/lib/store/features/connectionName/connectionNameSlice";
 import { useRouter } from "next/navigation";
+import BallBounce from "@/components/Loaders/BallBounce";
 
 function Pay({
   params,
@@ -21,8 +22,24 @@ function Pay({
   const dispatch = useAppDispatch();
   const [amount, setAmount] = useState("");
   const [paymentType, setPaymentType] = useState("cash");
+  const [isLoading, setLoading] = useState(false);
+  const [isPaid, setPaid] = useState(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (!isPaid) {
+      return;
+    }
+
+    const timeOut = setInterval(() => {
+      router.back();
+    }, 4000);
+
+    return () => {
+      clearInterval(timeOut);
+    };
+  }, [isPaid]);
 
   useEffect(() => {
     dispatch(add({ userName: sellerName, userType: "seller" }));
@@ -33,6 +50,7 @@ function Pay({
     amount: number,
     paymentType: string
   ) => {
+    setLoading(true);
     try {
       const { data } = await axios.post(
         "http://localhost:3000/api/bill",
@@ -59,7 +77,8 @@ function Pay({
           variant: "default",
         });
 
-        router.push(`/sellerprofile/${sellerNumber}/${customerNumber}`);
+        setPaid(true);
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -69,6 +88,32 @@ function Pay({
   const handlePaymentType = (ptype: string) => {
     setPaymentType(ptype);
   };
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <div className="w-[270px] h-[270px]  flex  justify-center items-center">
+          <BallBounce size={"size-6"} bg={"bg-slate-200"}></BallBounce>
+        </div>
+      </div>
+    );
+  }
+
+  if (isPaid) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <div className="w-[270px] h-[270px]  flex flex-col justify-center items-center gap-2">
+          <div className="w-24 h-24 rounded-full font-poppins font-bold text-xl text-prime bg-[#ffc300] flex justify-center items-center">
+            <Confetti gravity={0.15} />
+            {amount ? <span>{parseInt(amount)}</span> : <span>0</span>}
+          </div>
+          <span className="font-bold font-poppins ">
+            {" Payment Successful!"}
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full  flex flex-col gap-7  items-center py-2 ">

@@ -17,10 +17,17 @@ function PaymentTrackingForUser({ amount }: { amount: number }) {
               amount < 0
                 ? "text-red-500 text-muted-foreground"
                 : "text-green-500"
-            }    text-3xl flex justify-center items-center font-poppins`}
+            }    text-3xl flex justify-center  items-center font-poppins`}
           >
-            <div className="text-sm h-9 flex justify-center items-start">₹</div>
-            <div>{Math.abs(amount)}</div>
+            <div className="text-sm h-9 flex justify-start mr-[0.1rem] items-start">
+              ₹
+            </div>
+
+            {amount !== undefined ? (
+              <div>{Math.abs(amount)}</div>
+            ) : (
+              <div>0</div>
+            )}
           </div>
           {/* <span className="text-sm  text-zinc-400">you will get</span> */}
         </div>

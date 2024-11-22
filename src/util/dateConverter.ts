@@ -18,5 +18,5 @@ export function dateConverter(date: string) {
   const trimedDate = date.split("T")[0]; // remove time
   const [year, month, day] = trimedDate.split("-"); // split date to year, month and day
 
-  return `${day}-${months[month as keyof typeof months]}-${year}`;
+  return `${day} ${months[month as keyof typeof months]}, ${year}`;
 }

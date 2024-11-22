@@ -23,7 +23,6 @@ export default clerkMiddleware(async (auth, request: NextRequest) => {
   }
 
   if (userId && (isPublicRoute(request) || isAccessingHome)) {
-    console.log("No,I am here!");
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

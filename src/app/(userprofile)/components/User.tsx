@@ -21,7 +21,7 @@ export default function User({
     >
       {/* date */}
       <div className=" w-full h-full flex rounded-s-xl flex-col justify-center bg-[#ffc300] items-center">
-        <span className="w-full text-sm md:text-xl font-mono text-center ">
+        <span className="w-full text-sm md:text-xl font-poppins text-center ">
           {dateConverter(createdAt.toString())}
         </span>
       </div>

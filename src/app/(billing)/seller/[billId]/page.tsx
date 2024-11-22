@@ -13,40 +13,52 @@ import axios from "axios";
 import IBill from "@/config/type/billType";
 import { dateConverter } from "@/util/dateConverter";
 import nameTrimer from "@/util/nameTrimer";
+import BallBounce from "@/components/Loaders/BallBounce";
 
 const SellerBill = ({ params }: { params: { billId: string } }) => {
   const { billId } = params;
 
+  const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState<IBill>();
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       try {
         const { data } = await axios.get(`/api/bill?bill=${billId}`);
 
         if (data.success) {
           setData(data.data);
+          setLoading(false);
         }
       } catch (error) {}
     })();
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <BallBounce size={"size-6"} bg={"bg-slate-200"}></BallBounce>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full md:w-1/2 h-full flex md:flex-row flex-col items-center justify-between  p-7">
+    <div className="w-full md:w-[550px] h-full flex md:flex-row flex-col items-center justify-between  p-7">
       {/* bill */}
       <div className="relative flex flex-col justify-center   items-center w-full h-full  ">
         <CardHeader className=" w-full font-poppins">
           <CardTitle>
             <div className="w-full text-primary flex justify-between items-center">
               <span className="tag w-full ">Bill</span>
-              <span className="val  font-normal text-muted-foreground w-full">
+              <span className="val  font-normal flex justify-end text-muted-foreground w-full">
                 {nameTrimer(billId, 12)}
               </span>
             </div>
           </CardTitle>
           <CardDescription
             className={`font-mono font-semibold ${
-              data?.paid && "text-[ #ffc300]"
+              data?.paid && "text-[#ffc300]"
             } `}
           >
             <span className="text-sm">
@@ -74,7 +86,8 @@ const SellerBill = ({ params }: { params: { billId: string } }) => {
           <div className="w-full py-2 flex justify-between items-center text-primary">
             <span className="tag w-full flex justify-start">date :</span>
             <span className="val font-normal w-full flex justify-end">
-              {dateConverter(JSON.stringify(data?.createdAt!))}
+              {data?.createdAt !== undefined &&
+                dateConverter(data?.createdAt.toString())}
             </span>
           </div>
         </CardContent>
@@ -89,9 +102,12 @@ const SellerBill = ({ params }: { params: { billId: string } }) => {
             <span
               className={`${
                 data?.amount! > 0 ? "text-green-400" : "text-red-400"
-              } val font-bold text-3xl w-full flex justify-end`}
+              } val font-bold text-3xl w-full flex justify-end gap-[0.1rem]`}
             >
-              ₹{Math.abs(data?.amount!)}
+              <span className="text-sm h-full flex justify-center items-start ">
+                ₹
+              </span>
+              <span> {Math.abs(data?.amount!)}</span>
             </span>
           </div>
         </CardFooter>
