@@ -1,7 +1,7 @@
 "use client";
 import { RiSendPlane2Line } from "react-icons/ri";
 import ProfilePic from "@/components/ProfilePic";
-import React from "react";
+import React, { useState } from "react";
 import PaymentTrackingForUser from "./PaymentTrackingForUser";
 import { useAppSelector } from "@/lib/store/hooks/hooks";
 import Backbtn from "@/components/Backbtn";
@@ -9,9 +9,12 @@ import nameTrimer from "@/util/nameTrimer";
 import { TbReceiptRupee } from "react-icons/tb";
 import { useRouter } from "next/navigation";
 import BallBounce from "@/components/Loaders/BallBounce";
+import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
 
 function Nav() {
   const connection = useAppSelector((state) => state.connection);
+  const [remainderSendingLoder, setRemainderSendingLoder] = useState(false);
 
   const router = useRouter();
 
@@ -56,11 +59,41 @@ function Nav() {
               <span className="text-blue-700">{"pay"}</span>
               <TbReceiptRupee className="size-7 text-blue-700 animate-bounce" />
             </span>
-          ) : (
-            <span className="font-bold flex justify-center text-blue-700 items-center font-nunito text-xl">
+          ) : !remainderSendingLoder ? (
+            <span
+              className="font-bold flex justify-center text-blue-700 items-center font-nunito text-xl"
+              onClick={() => {
+                (async () => {
+                  setRemainderSendingLoder(true);
+                  try {
+                    const { data } = await axios.post(
+                      `/api/remainder`,
+                      {
+                        connectionId: connection.connectionId,
+                      },
+                      {
+                        headers: { "Content-Type": "application/json" },
+                      }
+                    );
+                    if (data.success) {
+                      toast({
+                        variant: "default",
+                        title: `₹ ${connection.amount} remainder sent successfully!🎉`,
+                      });
+                      setRemainderSendingLoder(false);
+                    }
+                  } catch (error) {}
+                })();
+              }}
+            >
               <span>{"remaind"}</span>
               <RiSendPlane2Line className="size-7 animate-next" />
             </span>
+          ) : (
+            <BallBounce size="size-3" bg="bg-blue-700"></BallBounce>
+            // <div className="relative w-9 h-9 font-bold rounded-full animate-spin  text-blue-700 ">
+            //   <RiSendPlane2Line className="size-7 absolute -top-2 left-0 " />
+            // </div>
           )}
         </span>
       </div>

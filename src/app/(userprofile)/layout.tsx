@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import StoreProvider from "./StoreProvider";
 import Nav from "./components/Nav";
 
@@ -11,6 +12,7 @@ export default function HomeLayout({
       <StoreProvider>
         <Nav></Nav>
         <div className="w-full h-[calc(100%-17.5rem)] flex-1 ">{children}</div>
+        <Toaster />
       </StoreProvider>
     </div>
   );
