@@ -114,6 +114,9 @@ export async function GET(request: Request) {
           customerNumber: customer,
         },
       },
+      {
+        $sort: { createdAt: -1 }, // Sort by createdAt in descending order (-1 for descending, 1 for ascending)
+      },
       //look for seller
       {
         $lookup: {
@@ -196,7 +199,7 @@ export async function GET(request: Request) {
         success: true,
         data: {
           connection: connection[0],
-          transectionHistory: transectionHistory.reverse(),
+          transectionHistory,
         },
         message: "getting data successfull!",
       },
