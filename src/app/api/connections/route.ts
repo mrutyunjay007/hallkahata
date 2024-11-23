@@ -190,6 +190,8 @@ export async function GET(request: Request) {
           aprooved: 1,
           paid: 1,
           paymentType: 1,
+          createdBy: 1,
+          cancelled: 1,
         },
       },
     ]);

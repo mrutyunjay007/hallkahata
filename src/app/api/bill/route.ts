@@ -154,12 +154,16 @@ export async function POST(request: Request) {
       customerName: connection?.customerName,
       customerNumber: connection?.customerNumber,
       aprooved: (bySeller && paid) || (bySeller && !customer) ? true : false,
+      cancelled: false,
       amount,
       paid,
       refBillId,
       refCreatedAt,
       paymentType, // product/ online/ cash
       createdAt: Date.now(),
+      createdBy: bySeller
+        ? connection?.sellerNumber
+        : connection?.customerNumber,
     });
 
     await newBill.save();
@@ -188,5 +192,39 @@ export async function POST(request: Request) {
   } catch (error) {
     console.log(error);
     return ResponseServerError("bill creation failed!");
+  }
+}
+
+// ----------------------- Delete bill ----------------------
+
+export async function DELETE(request: Request) {
+  await dbConnection();
+
+  try {
+    const url = new URL(request.url);
+
+    const bill = url.searchParams.get("bill");
+    const connection = url.searchParams.get("connection");
+
+    const connectionAmount = await ConnectionModel.findOne({
+      _id: connection,
+    }).select("amount");
+
+    const billAmount = await BillModel.findOne({ _id: bill }).select("amount");
+
+    if (!connectionAmount || !billAmount) {
+      return Response(false, "connection or bill not present", 404);
+    }
+
+    await ConnectionModel.updateOne(
+      { _id: connection },
+      { amount: connectionAmount?.amount! - billAmount?.amount! }
+    );
+
+    await BillModel.deleteOne({ _id: bill });
+
+    return Response(true, "bill deleted successfully!", 200);
+  } catch (error) {
+    return ResponseServerError("bill deletion failed!");
   }
 }

@@ -86,6 +86,20 @@ const config = {
             transform: "rotate(-360deg)",
           },
         },
+        jump: {
+          "0%": {
+            transform: "translateY(-200%)",
+            animationTimingFunction: "cubic-bezier(0.8,0,1,1)",
+          },
+          "100%": {
+            transform: "translateY(-200%)",
+            animationTimingFunction: "cubic-bezier(0.8,0,1,1)",
+          },
+          "50%": {
+            transform: "none",
+            animationTimingFunction: "cubic-bezier(0,0,0.2,1)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -93,6 +107,7 @@ const config = {
         next: "next 1s infinite",
         one_rotation: "one_rotation 0.5s ease-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
+        jump: "jump 2s ease-out infinite",
       },
       backgroundImage: {
         "zigzag-gradient":

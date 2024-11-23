@@ -7,6 +7,7 @@ export interface IConnection {
   phoneNumber: string;
   userType: string;
   connectionId: string;
+  billId: string;
 }
 
 const initialState: IConnection = {
@@ -15,6 +16,7 @@ const initialState: IConnection = {
   phoneNumber: "",
   userType: "",
   connectionId: "",
+  billId: "",
 };
 
 export const connectionSlice = createSlice({
@@ -38,10 +40,18 @@ export const connectionSlice = createSlice({
     addConnectionId: (state, action: PayloadAction<string>) => {
       state.connectionId = action.payload;
     },
+    updateAmount: (state, action: PayloadAction<number>) => {
+      state.amount = state.amount - action.payload;
+    },
+
+    billIdToDelete: (state, action: PayloadAction<string>) => {
+      state.billId = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { add, addConnectionId } = connectionSlice.actions;
+export const { add, addConnectionId, updateAmount, billIdToDelete } =
+  connectionSlice.actions;
 
 export default connectionSlice.reducer;
