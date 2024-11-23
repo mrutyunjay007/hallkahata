@@ -22,6 +22,7 @@ function SellerProfile({
 
   const billId = useAppSelector((state) => state.connection.billId);
 
+  // filter out the deleted bill
   useEffect(() => {
     if (billId !== "") {
       setData((pre) => ({
@@ -33,6 +34,7 @@ function SellerProfile({
     }
   }, [billId]);
 
+  // get the data
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -50,6 +52,7 @@ function SellerProfile({
     })();
   }, []);
 
+  // Loader
   if (isLoading) {
     return (
       <div className="w-full h-full px-5 py-3 rounded-t-2xl">
@@ -73,7 +76,6 @@ function SellerProfile({
       <div className="w-full h-full px-5 py-3 rounded-t-2xl">
         <ScrollArea className="h-full py-2 px-2 rounded-xl bg-slate-100 w-full  ">
           {data?.transectionHistory.map((bill: any) => (
-            // <Link key={bill._id} href={`/seller/${bill._id}`}>
             <User
               key={bill._id}
               billId={bill._id}
@@ -85,7 +87,6 @@ function SellerProfile({
               amICreated={bill.customer.phoneNumber === bill.createdBy} // check if authed user created the bill or not
               cancelled={bill.cancelled}
             ></User>
-            // </Link>
           ))}
         </ScrollArea>
       </div>

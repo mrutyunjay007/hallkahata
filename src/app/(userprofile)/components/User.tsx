@@ -3,15 +3,16 @@ import React, { useState } from "react";
 import ProfilePic from "@/components/ProfilePic";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { dateConverter } from "@/util/dateConverter";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
-import { MdDelete } from "react-icons/md";
-import CancelLoader from "@/components/Loaders/CancelLoader";
 import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import {
   billIdToDelete,
   updateAmount,
 } from "@/lib/store/features/connection/connectionSlice";
+import DeleteLoader from "@/components/Loaders/DeleteLoader";
+import { Button } from "@/components/ui/button";
+import BallBounce from "@/components/Loaders/BallBounce";
 
 export default function User(
   {
@@ -39,14 +40,66 @@ export default function User(
 
   const dispatch = useAppDispatch();
 
-  const [cancelLoading, setCancelLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
-  const [aprooval, setAprooval] = useState(aprooved);
+  const [cancellationStatus, setCancellationStatus] = useState(cancelled);
+  const [approval, setApproval] = useState(aprooved);
 
-  if (cancelLoading) {
+  // Loaders
+  if (deleteLoading || resendLoading) {
     return (
       <div className=" w-full bg-white h-[5.1rem] my-2 rounded-xl cursor-pointer flex flex-col justify-center items-center">
-        <CancelLoader />
+        {deleteLoading ? (
+          <DeleteLoader />
+        ) : (
+          <BallBounce size="size-3" bg="bg-slate-300"></BallBounce>
+        )}
+      </div>
+    );
+  }
+
+  // Cancelled notification
+  if (cancellationStatus) {
+    return (
+      <div
+        className={`flex  w-full h-[5.1rem] my-2 rounded-xl cursor-pointer  justify-center items-center`}
+      >
+        <div className=" px-5 w-full h-full flex rounded-xl  font-poppins justify-between bg-white items-center">
+          <span className="text-sm text-wrap">{`₹ ${amount} payment approval request canceled!`}</span>
+          {/* resend btn */}
+          <Button
+            className="p-2 text-sm"
+            onClick={() => {
+              setResendLoading(true);
+              (async () => {
+                try {
+                  const { data } = await axios.post(
+                    `http://localhost:3000/api/notification`,
+                    {
+                      id: billId,
+                      aprooved: false,
+                      cancel: false,
+                      remainder: false,
+                    },
+                    {
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                    }
+                  );
+                  if (data.success) {
+                    setResendLoading(false);
+                    setCancellationStatus(false);
+                    dispatch(updateAmount(amount));
+                  }
+                } catch (error) {}
+              })();
+            }}
+          >
+            Resend
+          </Button>
+        </div>
       </div>
     );
   }
@@ -55,12 +108,12 @@ export default function User(
     <div
       className={`flex relative w-full h-[5.1rem] my-2 rounded-xl cursor-pointer  justify-center items-center`}
     >
-      {/* delete and aprooval */}
-      {amICreated && (
+      {/* delete */}
+      {amICreated && !approval && (
         <span
           className="opacity-90 size-4 text-sm bg-red-600  rounded-full text-center flex items-center justify-center absolute top-3 right-3 z-50 text-white font-nunito font-bold"
           onClick={() => {
-            setCancelLoading(true);
+            setDeleteLoading(true);
             (async () => {
               try {
                 const { data } = await axios.delete(
@@ -69,7 +122,7 @@ export default function User(
 
                 if (data.success) {
                   // setDeleted(true);
-                  setCancelLoading(false);
+                  setDeleteLoading(false);
                   dispatch(updateAmount(amount));
                   dispatch(billIdToDelete(billId));
                 }
@@ -80,22 +133,48 @@ export default function User(
           {"x"}
         </span>
       )}
+
+      {/* double click to aproove */}
       <span
         className="absolute bottom-2 z-30 right-3"
         onDoubleClick={() => {
-          if (!amICreated && !aprooval) {
-            setAprooval(true);
+          if (!amICreated && !approval) {
+            //ifee to make aprooval true
+            (async () => {
+              try {
+                // make aprooval true
+                const { data } = await axios.post(
+                  `http://localhost:3000/api/notification`,
+                  {
+                    id: billId,
+                    aprooved: true,
+                    cancel: false,
+                    remainder: false,
+                  },
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+              } catch (error) {
+                console.log(error);
+              }
+            })();
+
+            setApproval(true);
           }
         }}
       >
         <RiCheckDoubleFill
           className={`size-5  ${
-            aprooval ? "text-teal-400" : "text-slate-400"
+            approval ? "text-blue-700" : "text-slate-400"
           } `}
         />
       </span>
 
       {/* body */}
+
       <div
         className={`w-full h-full font-poppins flex justify-between items-center  rounded-xl  `}
         onClick={() => {

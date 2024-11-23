@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import axios from "axios";
 import ITanctionWithConnection from "@/config/type/transactionsWithConnectionType";
 import DataLoader from "@/components/Loaders/DataLoader";
+import { useAppSelector } from "@/lib/store/hooks/hooks";
 
 function CustomerProfile({
   params,
@@ -20,6 +21,21 @@ function CustomerProfile({
 
   const [data, setData] = React.useState<ITanctionWithConnection>();
 
+  const billId = useAppSelector((state) => state.connection.billId);
+
+  // filter out the deleted bill
+  useEffect(() => {
+    if (billId !== "") {
+      setData((pre) => ({
+        ...pre!,
+        transectionHistory: pre?.transectionHistory.filter(
+          (item) => item._id !== billId
+        )!,
+      }));
+    }
+  }, [billId]);
+
+  // get the data
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -59,16 +75,17 @@ function CustomerProfile({
       <div className="w-full h-full px-5 py-3 rounded-t-2xl">
         <ScrollArea className="h-[calc(100%-6rem)] py-2 px-2 rounded-xl bg-slate-100 w-full  ">
           {data?.transectionHistory.map((bill: any) => (
-            <Link key={bill._id} href={`/customer/${bill._id}`}>
-              <User
-                key={bill._id}
-                // userName={bill.customer.userName}
-                createdAt={bill.createdAt}
-                amount={bill.amount}
-                aprooved={bill.aprooved}
-                amISeller={true}
-              ></User>
-            </Link>
+            <User
+              key={bill._id}
+              billId={bill._id}
+              connectionId={data.connection._id}
+              createdAt={bill.createdAt}
+              amount={bill.amount}
+              aprooved={bill.aprooved}
+              amISeller={true} // authed user is not seller
+              amICreated={bill.seller.phoneNumber === bill.createdBy} // check if authed user created the bill or not
+              cancelled={bill.cancelled}
+            ></User>
           ))}
         </ScrollArea>
       </div>
