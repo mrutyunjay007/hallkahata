@@ -2,17 +2,16 @@ import dbConnection from "@/lib/dbConnect";
 import BillModel from "@/models/Bill";
 import ConnectionModel from "@/models/Connection";
 import Response, { ResponseServerError } from "@/util/Response";
+import { getDataFromToken } from "@/util/getDataFromToken";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 // ------------------------- Get all notifications ----------------------
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   //connect db
   await dbConnection();
   try {
-    //   const url = new URL(request.url);
-
-    //   const bill = url.searchParams.get("bill");
+    const { phoneNumber } = await getDataFromToken(request);
 
     const billData = await BillModel.aggregate([
       // get all bills of same customer with no aprooval or same seller with paid bill and no aprooval
@@ -21,12 +20,12 @@ export async function GET(request: Request) {
           $or: [
             {
               // me as customer notification receved from seller to aproove
-              customerNumber: "8777761381",
+              customerNumber: phoneNumber!,
               aprooved: false,
             },
             // me as seller notification receved from customer of paid bill
             {
-              sellerNumber: "8777761380",
+              sellerNumber: phoneNumber!,
               paid: true,
               aprooved: false,
             },
@@ -94,6 +93,8 @@ export async function GET(request: Request) {
           createdAt: 1,
           paid: 1,
           paymentType: 1,
+          cancelled: 1,
+          createdBy: 1,
         },
       },
     ]);
@@ -102,7 +103,7 @@ export async function GET(request: Request) {
     const remainderData = await ConnectionModel.aggregate([
       {
         $match: {
-          customerNumber: "8777761381",
+          customerNumber: phoneNumber!,
           remainder: true,
         },
       },
@@ -137,6 +138,7 @@ export async function GET(request: Request) {
           customerNumber: 1,
           seller: 1,
           amount: 1,
+          remainder: 1,
         },
       },
     ]);
@@ -149,6 +151,7 @@ export async function GET(request: Request) {
       {
         success: true,
         data: [...billData, ...remainderData],
+
         message: "bill got successfully!",
       },
       {
@@ -187,7 +190,7 @@ export async function POST(request: NextRequest) {
     // Remainder notification
     // if notification type is remainder -> make remainder false
     if (remainder) {
-      await ConnectionModel.findOneAndUpdate(id, { remainder: false });
+      await ConnectionModel.findOneAndUpdate({ _id: id }, { remainder: false });
 
       return Response(true, "remainder updated successfully!", 200);
     }

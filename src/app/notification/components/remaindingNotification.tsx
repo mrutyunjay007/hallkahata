@@ -1,18 +1,74 @@
-import React from "react";
+import BallBounce from "@/components/Loaders/BallBounce";
+import { add } from "@/lib/store/features/notification/notificationSlice";
+import { useAppDispatch } from "@/lib/store/hooks/hooks";
+import axios from "axios";
+import React, { useState } from "react";
+import { RiCheckDoubleFill, RiCloseFill } from "react-icons/ri";
 
-function RemaindingNotification() {
+function RemaindingNotification({
+  id,
+  userName,
+  amount,
+}: {
+  id: string;
+  userName: string;
+  amount: number;
+}) {
+  const dispatch = useAppDispatch();
+  const [isLoading, setLoading] = useState(false);
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex bg-white justify-center px-3 items-center rounded-lg">
+        <BallBounce size="size-3" bg="bg-slate-400"></BallBounce>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full h-full flex cursor-pointer justify-between  items-center">
-      <span className="text-xl w-full h-full px-5 flex items-center gap-2 bg-[#ffc300] rounded-l-xl">
-        <span> You need to pay </span>
-        <span className="font-bold">₹500</span> <span>to</span>to
-        <span className="font-bold">Ramesh</span> <span>Seller </span>
+    <div className="w-full h-full flex bg-white justify-between px-3 items-center rounded-lg">
+      <span className=" text-wrap font-poppins w-full h-full  flex items-center  ">
+        {`You have to pay ₹${Math.abs(amount)} to ${userName}`}
       </span>
+
       {/* btns */}
-      <span className="px-3 w-full h-full flex justify-end items-center gap-2 text-white font-bold bg-slate-50 rounded-r-xl">
-        <span className="px-5 py-2 bg-[#ffc300] rounded-lg text-black cursor-pointer">
-          ok
+      <span className=" h-full flex justify-end items-center gap-3 text-white font-bold bg-slate-50 rounded-r-xl">
+        {/* btn to make remainder false in db */}
+        <span
+          className=" w-7 h-7 flex justify-center items-center bg-primary rounded-full  cursor-pointer"
+          onClick={() => {
+            (async () => {
+              try {
+                setLoading(true);
+
+                const { data } = await axios.post(
+                  `http://localhost:3000/api/notification`,
+                  {
+                    id,
+                    aprooved: false,
+                    cancel: false,
+                    remainder: true,
+                  },
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+
+                if (data.success) {
+                  setLoading(false);
+                  dispatch(add(id));
+                }
+              } catch (error) {}
+            })();
+          }}
+        >
+          <RiCheckDoubleFill className="size-3 font-bold" />
         </span>
+        {/* <span className=" bg-slate-200 text-primary w-7 h-7 flex justify-center items-center rounded-full">
+          <RiCloseFill className="size-3  font-bold" />
+        </span> */}
       </span>
     </div>
   );

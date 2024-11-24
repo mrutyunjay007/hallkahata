@@ -45,6 +45,8 @@ function CustomerProfile({
         );
 
         if (data.success) {
+          console.log(data.data);
+
           setData(data.data);
           setLoading(false);
         }

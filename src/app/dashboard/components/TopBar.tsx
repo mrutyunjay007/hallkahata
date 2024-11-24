@@ -8,10 +8,13 @@ import { RiNotification2Fill } from "react-icons/ri";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { getDataFromToken } from "@/util/getDataFromToken";
 import { AddCurrentUserData } from "@/lib/store/features/auth/authSlice";
+import { useRouter } from "next/navigation";
 
 function TopBar() {
   const [youWillGet, setYouWillGet] = useState(0);
   const [youWillGive, setYouWillGive] = useState(0);
+
+  const router = useRouter();
 
   const { iAmCustomer, phoneNumber } = useAppSelector((state) => state.auth);
 
@@ -31,7 +34,6 @@ function TopBar() {
             setYouWillGet(data.data.youWillGet);
             setYouWillGive(data.data.youWillGive);
           }
-          
         } catch (error) {
           console.log(error);
         }
@@ -49,10 +51,13 @@ function TopBar() {
             {`I'm a ${!iAmCustomer ? "Seller" : "Customer"}`}
           </span>
         </div>
-        <div className="relative">
-          <span className="w-3 h-3 bg-[#ffc300] rounded-full absolute top-0 right-0 flex justify-center items-center text-primery  text-[11px] p-2 font-poppins font-semibold  ">
-            {"1"}
-          </span>
+        <div
+          className="relative  cursor-pointer"
+          onClick={() => {
+            router.push("/notification");
+          }}
+        >
+          <span className="w-3 h-3 border-2 border-white bg-[#ffc300] rounded-full absolute z-20 top-0 right-0 flex justify-center items-center"></span>
           <RiNotification2Fill className="size-6" />
         </div>
       </div>

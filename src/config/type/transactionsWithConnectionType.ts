@@ -16,7 +16,7 @@ interface IConnection {
   amount: number;
 }
 
-interface ITransaction {
+export interface ITransaction {
   _id: string;
   amount: number;
   seller: ISeller;
@@ -24,6 +24,9 @@ interface ITransaction {
   createdAt: string;
   paid: boolean;
   paymentType: string;
+  aprooved: boolean;
+  createdBy: string;
+  cancelled: boolean;
 }
 
 export default interface ITanctionWithConnection {
