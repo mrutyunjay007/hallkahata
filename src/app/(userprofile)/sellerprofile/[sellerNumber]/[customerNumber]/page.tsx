@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import User from "../../../components/User";
-import Link from "next/link";
-import DataSetter from "../../../components/DataSetter";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { useAppSelector } from "@/lib/store/hooks/hooks";
 import axios from "axios";
 import ITanctionWithConnection from "@/config/type/transactionsWithConnectionType";
+import DataSetter from "../../../components/DataSetter";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import User from "../../../components/User";
 import DataLoader from "@/components/Loaders/DataLoader";
-import { useAppSelector } from "@/lib/store/hooks/hooks";
+import Filter from "@/app/(userprofile)/components/Filter";
 
 function SellerProfile({
   params,
@@ -40,7 +40,7 @@ function SellerProfile({
       setLoading(true);
       try {
         const { data } = await axios.get(
-          `/api/connections?seller=${sellerNumber}&customer=${customerNumber}`
+          `/api/connections?seller=${sellerNumber}&customer=${customerNumber}&color=${"white"}&date=${""}`
         );
 
         if (data.success) {
@@ -73,7 +73,16 @@ function SellerProfile({
         userType="seller"
       ></DataSetter>
 
-      <div className="w-full h-full px-5 py-3 rounded-t-2xl">
+      <div className="w-full h-full flex flex-col  gap-5 px-5 py-3 rounded-t-2xl">
+        {/* filter */}
+        <Filter
+          sellerNumber={sellerNumber}
+          customerNumber={customerNumber}
+          handelData={(data: ITanctionWithConnection) => {
+            setData(data);
+          }}
+        ></Filter>
+
         <ScrollArea className="h-full py-2 px-2 rounded-xl bg-slate-100 w-full  ">
           {data?.transectionHistory.map((bill: any) => (
             <User

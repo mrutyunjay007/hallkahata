@@ -9,6 +9,7 @@ import axios from "axios";
 import ITanctionWithConnection from "@/config/type/transactionsWithConnectionType";
 import DataLoader from "@/components/Loaders/DataLoader";
 import { useAppSelector } from "@/lib/store/hooks/hooks";
+import Filter from "@/app/(userprofile)/components/Filter";
 
 function CustomerProfile({
   params,
@@ -41,12 +42,10 @@ function CustomerProfile({
       setLoading(true);
       try {
         const { data } = await axios.get(
-          `/api/connections?customer=${customerNumber}&seller=${sellerNumber}`
+          `/api/connections?customer=${customerNumber}&seller=${sellerNumber}&color=${"white"}&date=${""}`
         );
 
         if (data.success) {
-          console.log(data.data);
-
           setData(data.data);
           setLoading(false);
         }
@@ -74,7 +73,16 @@ function CustomerProfile({
         userType="customer"
       ></DataSetter>
 
-      <div className="w-full h-full px-5 py-3 rounded-t-2xl">
+      <div className="w-full h-full flex flex-col  gap-5 px-5 py-3 rounded-t-2xl">
+        {/* filter */}
+        <Filter
+          sellerNumber={sellerNumber}
+          customerNumber={customerNumber}
+          handelData={(data: ITanctionWithConnection) => {
+            setData(data);
+          }}
+        ></Filter>
+
         <ScrollArea className="h-[calc(100%-6rem)] py-2 px-2 rounded-xl bg-slate-100 w-full  ">
           {data?.transectionHistory.map((bill: any) => (
             <User
