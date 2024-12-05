@@ -1,8 +1,10 @@
 import Connection from "@/components/Connection";
+import BallBounce from "@/components/Loaders/BallBounce";
 import DataLoader from "@/components/Loaders/DataLoader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AddCurrentUserData } from "@/lib/store/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
+import useInfiniteScrolling from "@/lib/store/hooks/useInfiniteScrolling";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
@@ -23,34 +25,36 @@ function Sellers() {
   const { phoneNumber } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  // get all sellers
-  useEffect(() => {
-    // token to cancel the request if the component unmounts
-    const cancelToken = axios.CancelToken.source();
+  const [page, setPage] = useState(1);
+  const [intersectionLoading, setIntersectionLoading] = useState(false);
+  const { More, intersectionObserverRef } = useInfiniteScrolling(
+    fetchData,
+    datas
+  );
 
-    setLoading(true);
-    
-    // iife to collect all sellers data
-    (async () => {
-      try {
-        const { data } = await axios.get("http://localhost:3000/api/sellers");
+  // get the data with infinite scrolling
+  async function fetchData(cb: (more: boolean) => void) {
+    page > 1 ? setIntersectionLoading(true) : setLoading(true);
+    try {
+      const { data } = await axios.get(
+        `http://localhost:3000/api/sellers?limit=${10}&page=${page}`
+      );
 
-        if (data.success) {
-          phoneNumber === "" &&
-            dispatch(AddCurrentUserData(data.currentUserData));
-          setDatas(data.data);
-          setLoading(false);
+      if (data.success) {
+        if (data.data.length < 10) {
+          cb(false);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
 
-    return () => {
-      // Cleanup function to cancel the request if the component unmounts
-      cancelToken.cancel();
-    };
-  }, []);
+        phoneNumber === "" &&
+          dispatch(AddCurrentUserData(data.currentUserData));
+        setDatas(data.data);
+        setPage((pre) => pre + 1);
+        page > 1 ? setIntersectionLoading(false) : setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -75,6 +79,17 @@ function Sellers() {
             amount={data.amount}
           ></Connection>
         ))}
+
+        {More && (
+          <div
+            ref={intersectionObserverRef}
+            className="w-full h-[5.1rem] flex justify-center items-center"
+          >
+            {intersectionLoading && (
+              <BallBounce size={"size-4"} bg={"bg-slate-300"}></BallBounce>
+            )}
+          </div>
+        )}
       </ScrollArea>
     </div>
   );

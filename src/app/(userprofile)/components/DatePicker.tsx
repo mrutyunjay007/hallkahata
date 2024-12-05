@@ -5,6 +5,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { selectDate } from "@/lib/store/features/filter/filterSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { cn } from "@/lib/utils";
 import {
   dateReverserConverterForCalendar,
@@ -16,13 +18,13 @@ import React, { useEffect, useRef, useState } from "react";
 function DatePicker({
   pre,
   reset,
-  handelReset,
-  handelDate,
+  handleReset,
+  handleDate,
 }: {
   pre: string;
   reset: boolean;
-  handelReset: () => void;
-  handelDate: (date: string) => void;
+  handleReset: () => void;
+  handleDate: (date: string) => void;
 }) {
   const [date, setDate] = useState<Date | undefined>(
     pre !== "" ? new Date(pre) : new Date()
@@ -47,8 +49,8 @@ function DatePicker({
     if (reset) {
       setSelectedDate("");
       setDate(new Date());
-      handelDate("");
-      handelReset();
+      handleDate("");
+      handleReset();
     }
   }, [reset]);
 
@@ -72,9 +74,10 @@ function DatePicker({
           selected={date}
           onSelect={(d) => {
             setSelectedDate(d?.toString().slice(4, 15)!);
-            handelDate(
+            handleDate(
               dateReverserConverterForCalendar(d?.toString().slice(4, 15)!)
             );
+
             setDate(d);
           }}
           disabled={(date) =>

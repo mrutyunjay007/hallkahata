@@ -1,16 +1,18 @@
+import { selectColor } from "@/lib/store/features/filter/filterSlice";
+import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import { set } from "mongoose";
 import React, { useEffect, useState } from "react";
 
 function RedGreenFilter({
   pre,
   reset,
-  handelReset,
-  handelColor,
+  handleReset,
+  handleColor,
 }: {
   pre: string;
   reset: boolean;
-  handelReset: () => void;
-  handelColor: (color: string) => void;
+  handleReset: () => void;
+  handleColor: (color: string) => void;
 }) {
   const [left, setLeft] = useState(pre === "red" ? true : false);
   const [right, setRight] = useState(pre === "green" ? true : false);
@@ -23,8 +25,8 @@ function RedGreenFilter({
       setLeft(false);
       setRight(false);
       setCenter(true);
-      handelColor("white");
-      handelReset();
+      handleColor("white");
+      handleReset();
     }
   }, [reset]);
 
@@ -48,7 +50,7 @@ function RedGreenFilter({
           setLeft(true);
           setRight(false);
           setCenter(false);
-          handelColor("red");
+          handleColor("red");
         }}
       >
         <span className="size-2 rounded-full bg-red-600"></span>
@@ -61,7 +63,7 @@ function RedGreenFilter({
           setLeft(false);
           setRight(false);
           setCenter(true);
-          handelColor("white");
+          handleColor("white");
         }}
       >
         <span className="size-2 rounded-full bg-slate-300 shadow-lg"></span>
@@ -74,7 +76,7 @@ function RedGreenFilter({
           setLeft(false);
           setRight(true);
           setCenter(false);
-          handelColor("green");
+          handleColor("green");
         }}
       >
         <span className="size-2 rounded-full bg-green-500"></span>

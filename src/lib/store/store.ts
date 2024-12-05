@@ -3,6 +3,7 @@ import connectionReducer from "./features/connection/connectionSlice";
 import connectionNameReducer from "./features/connectionName/connectionNameSlice";
 import authReducer from "./features/auth/authSlice";
 import notificationReducer from "./features/notification/notificationSlice";
+import filterReducer from "./features/filter/filterSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -11,6 +12,7 @@ export const makeStore = () => {
       connectionName: connectionNameReducer,
       auth: authReducer,
       notification: notificationReducer,
+      filter: filterReducer,
     },
   });
 };

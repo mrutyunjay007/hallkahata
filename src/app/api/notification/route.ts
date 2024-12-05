@@ -13,6 +13,12 @@ export async function GET(request: NextRequest) {
   try {
     const { phoneNumber } = await getDataFromToken(request);
 
+    const url = new URL(request.url);
+    const limit = parseInt(url.searchParams.get("limit") as string);
+    const page = parseInt(url.searchParams.get("page") as string);
+
+    const skip = (page - 1) * limit;
+
     const billData = await BillModel.aggregate([
       // get all bills of same customer with no aprooval or same seller with paid bill and no aprooval
       {
@@ -31,6 +37,15 @@ export async function GET(request: NextRequest) {
             },
           ],
         },
+      },
+      {
+        $sort: { createdAt: -1 }, // Sort by createdAt in descending order (-1 for descending, 1 for ascending)
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
       },
       // lookup to get seller data
       {

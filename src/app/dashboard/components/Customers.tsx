@@ -4,6 +4,7 @@ import DataLoader from "@/components/Loaders/DataLoader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AddCurrentUserData } from "@/lib/store/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
+import useInfiniteScrolling from "@/lib/store/hooks/useInfiniteScrolling";
 import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -26,40 +27,41 @@ function Customers() {
   const { phoneNumber } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  // get all customers
-  useEffect(() => {
-    //token to cancel the request if the component unmounts
-    const cancelToken = axios.CancelToken.source();
+  const [page, setPage] = useState(1);
+  const [intersectionLoading, setIntersectionLoading] = useState(false);
+  const { More, intersectionObserverRef } = useInfiniteScrolling(
+    fetchData,
+    datas
+  );
 
-    setLoading(true);
+  // get the data with infinite scrolling
+  async function fetchData(cb: (more: boolean) => void) {
+    page > 1 ? setIntersectionLoading(true) : setLoading(true);
+    try {
+      const { data } = await axios.get(
+        `http://localhost:3000/api/customers?limit=${10}&page=${page}`
+      );
 
-    //iife to collect all customers data
-    (async () => {
-      try {
-        const { data } = await axios.get("http://localhost:3000/api/customers");
-
-        if (data.success) {
-          phoneNumber === "" &&
-            dispatch(AddCurrentUserData(data.currentUserData));
-          setDatas(data.data);
-          setLoading(false);
+      if (data.success) {
+        if (data.data.length < 10) {
+          cb(false);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
 
-    return () => {
-      // Cleanup function to cancel the request if the component unmounts
-      cancelToken.cancel();
-    };
-  }, []);
+        phoneNumber === "" &&
+          dispatch(AddCurrentUserData(data.currentUserData));
+        setDatas(data.data);
+        setPage((pre) => pre + 1);
+        page > 1 ? setIntersectionLoading(false) : setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   if (isLoading) {
     return (
       <div className="w-full h-full p-3 ">
         <div className="w-full  h-full flex justify-center items-center py-2 px-2 bg-slate-100 rounded-xl">
-          {/* <BallBounce size={"size-5"} bg={"bg-slate-200"}></BallBounce> */}
           <DataLoader numberOfItems={3}></DataLoader>
         </div>
       </div>
@@ -79,6 +81,17 @@ function Customers() {
             amount={data.amount}
           ></Connection>
         ))}
+
+        {More && (
+          <div
+            ref={intersectionObserverRef}
+            className="w-full h-[5.1rem] flex justify-center items-center"
+          >
+            {intersectionLoading && (
+              <BallBounce size={"size-4"} bg={"bg-slate-300"}></BallBounce>
+            )}
+          </div>
+        )}
       </ScrollArea>
 
       {phoneNumber !== "" && (

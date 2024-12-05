@@ -15,13 +15,26 @@ export async function GET(request: NextRequest) {
     if (!tokenData) {
       console.log(tokenData);
     }
+    const url = new URL(request.url);
+    const limit = parseInt(url.searchParams.get("limit") as string);
+    const page = parseInt(url.searchParams.get("page") as string);
 
+    const skip = (page - 1) * limit;
     const customers = await ConnectionModel.aggregate([
       {
         $match: {
           sellerNumber: tokenData?.phoneNumber,
           amount: { $ne: 0 },
         },
+      },
+      {
+        $sort: { createdAt: -1 }, // Sort by createdAt in descending order (-1 for descending, 1 for ascending)
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
       },
       {
         $lookup: {

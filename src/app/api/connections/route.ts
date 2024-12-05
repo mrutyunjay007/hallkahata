@@ -19,6 +19,10 @@ export async function GET(request: Request) {
     const customer = url.searchParams.get("customer");
     const color = url.searchParams.get("color");
     const date = url.searchParams.get("date");
+    const limit = parseInt(url.searchParams.get("limit") as string);
+    const page = parseInt(url.searchParams.get("page") as string);
+
+    const skip = (page - 1) * limit;
 
     // aggregation pipeline for getting connection data
     const connection = await ConnectionModel.aggregate([
@@ -143,9 +147,17 @@ export async function GET(request: Request) {
             },
           },
         },
+
         {
           $sort: { createdAt: -1 }, // Sort by createdAt in descending order (-1 for descending, 1 for ascending)
         },
+        {
+          $skip: skip,
+        },
+        {
+          $limit: limit,
+        },
+
         //look for seller
         {
           $lookup: {
@@ -261,8 +273,15 @@ export async function GET(request: Request) {
           },
         },
       },
+
       {
         $sort: { createdAt: -1 }, // Sort by createdAt in descending order (-1 for descending, 1 for ascending)
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
       },
       //look for seller
       {

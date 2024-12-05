@@ -8,54 +8,70 @@ import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
 import { RiLoader4Fill } from "react-icons/ri";
 import { BiReset } from "react-icons/bi";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
+import {
+  searching,
+  selectColor,
+  selectDate,
+} from "@/lib/store/features/filter/filterSlice";
 
 function Filter({
   sellerNumber,
   customerNumber,
-  handelData,
+  HaseMore,
+  handlePage,
+  handleData,
 }: {
   sellerNumber: string;
   customerNumber: string;
-  handelData: (data: ITanctionWithConnection) => void;
+  HaseMore: (more: boolean) => void;
+  handlePage: () => void;
+  handleData: (data: ITanctionWithConnection) => void;
 }) {
+  const {
+    date: searchedDate,
+    color: searchedColor,
+    searchLoading,
+  } = useAppSelector((state) => state.filter);
+  const dispatch = useAppDispatch();
+
   const [isFilter, setIsFilter] = useState(false);
   const [date, setDate] = useState("");
   const [color, setcolor] = useState("");
-  const [isLoading, setLoading] = useState(false);
   const [search, setSearch] = useState(false);
   const [reset, setReset] = useState(false);
-  const [searched, setSearched] = useState({
-    date: "",
-    color: "",
-  });
 
   useEffect(() => {
     if (search) {
       if (date !== "" || color !== "") {
-        setLoading(true);
-        setIsFilter(false);
+        dispatch(searching(true));
+        HaseMore(true);
         (async () => {
           try {
             const { data } = await axios.get(
-              `/api/connections?seller=${sellerNumber}&customer=${customerNumber}&color=${
+              `/api/connections?customer=${customerNumber}&seller=${sellerNumber}&color=${
                 color === "" ? "white" : color
-              }&date=${date}`
+              }&date=${date}&limit=${10}&page=${1}`
             );
+
             if (data.success) {
-              handelData(data.data);
-              setLoading(false);
+              // check if the data is less than 10 then disable haseMore
+              if (data.data.transectionHistory.length < 10) {
+                HaseMore(false);
+              }
+
+              handleData(data.data);
+
+              setIsFilter(false);
               setSearch(false);
               reset && setReset(false);
-              setSearched({
-                date: `${reset ? "" : date}`,
-                color: `${reset ? "" : color}`,
-              });
-              setDate("");
-              setcolor("");
+              dispatch(selectColor(reset ? "" : color));
+              dispatch(selectDate(reset ? "" : date));
+
+              handlePage();
+              dispatch(searching(false));
             }
-          } catch (error) {
-            console.log(error);
-          }
+          } catch (error) {}
         })();
       } else {
         toast({
@@ -84,7 +100,7 @@ function Filter({
               isFilter ? "block" : "hidden"
             }   text-slate-400`}
             onClick={() => {
-              if (searched.date !== "" || searched.color !== "") {
+              if (searchedDate !== "" || searchedColor !== "") {
                 setReset(true);
                 setSearch(true);
                 setDate("");
@@ -97,7 +113,7 @@ function Filter({
             }}
           />
 
-          {isLoading ? (
+          {searchLoading ? (
             <RiLoader4Fill className="size-7 text-bold text-blue-700 animate-spin" />
           ) : (
             <IoSearchCircle
@@ -117,24 +133,24 @@ function Filter({
          justify-evenly  items-center duration-300 ease-in-out`}
         >
           <DatePicker
-            pre={searched.date !== "" && !search ? searched.date : ""}
+            pre={searchedDate !== "" && !search ? searchedDate : ""}
             reset={reset}
-            handelReset={() => {
+            handleReset={() => {
               !search && setReset(false);
             }}
-            handelDate={(date: string) => {
+            handleDate={(date: string) => {
               setDate(date);
             }}
           ></DatePicker>
 
           <div className=" h-7 border-l-2 border-[#ffc300]"></div>
           <RedGreenFilter
-            pre={searched.color !== "" && !search ? searched.color : ""}
+            pre={searchedColor !== "" && !search ? searchedColor : ""}
             reset={reset}
-            handelReset={() => {
+            handleReset={() => {
               !search && setReset(false);
             }}
-            handelColor={(color: string) => {
+            handleColor={(color: string) => {
               setcolor(color);
             }}
           />
