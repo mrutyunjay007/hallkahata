@@ -174,6 +174,21 @@ export async function POST(request: Request) {
       { amount: connection?.amount + amount }
     );
 
+    // loan gien by seller and customer is present then update customer notification
+    customer &&
+      (await UserModel.findOneAndUpdate(
+        { phoneNumber: connection?.customerNumber },
+        { notification: true }
+      ));
+
+    // paid by customer then update seller notification
+    !bySeller &&
+      paid &&
+      (await UserModel.findOneAndUpdate(
+        { phoneNumber: connection?.sellerNumber },
+        { notification: true }
+      ));
+
     // if refBillId is present then update its paid status to true
     if (refBillId.length > 0) {
       await BillModel.updateOne({ _id: refBillId }, { paid: true });

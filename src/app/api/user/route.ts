@@ -72,6 +72,7 @@ export async function GET(request: Request) {
         $project: {
           userName: 1,
           phoneNumber: 1,
+          notification: 1,
           youWillGet: {
             $cond: {
               if: { $gt: ["$you_will_get", 0] },

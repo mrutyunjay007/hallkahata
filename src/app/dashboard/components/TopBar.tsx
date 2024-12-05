@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 function TopBar() {
   const [youWillGet, setYouWillGet] = useState(0);
   const [youWillGive, setYouWillGive] = useState(0);
+  const [notification, setNotification] = useState(false);
 
   const router = useRouter();
 
@@ -57,7 +58,9 @@ function TopBar() {
             router.push("/notification");
           }}
         >
-          <span className="w-3 h-3 border-2 border-white bg-[#ffc300] rounded-full absolute z-20 top-0 right-0 flex justify-center items-center"></span>
+          {notification && (
+            <span className="w-3 h-3 border-2 border-white bg-[#ffc300] rounded-full absolute z-20 top-0 right-0 flex justify-center items-center"></span>
+          )}
           <RiNotification2Fill className="size-6" />
         </div>
       </div>

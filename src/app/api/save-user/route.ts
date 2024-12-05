@@ -41,6 +41,7 @@ export async function POST(req: Request) {
       userId,
       userName,
       phoneNumber,
+      notification: false,
     });
     await user.save();
 

@@ -1,10 +1,12 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { boolean } from "zod";
 
 export interface User extends Document {
   userId: string;
   userName: string;
   phoneNumber: string;
   profilePic: string;
+  notification: boolean;
 }
 
 const UserSchema: Schema<User> = new mongoose.Schema({
@@ -21,7 +23,9 @@ const UserSchema: Schema<User> = new mongoose.Schema({
     required: [true, "Phone number is required"],
     unique: true,
   },
-
+  notification: {
+    type: Boolean,
+  },
   profilePic: String,
 });
 
