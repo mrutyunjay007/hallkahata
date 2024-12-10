@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import useInfiniteScrolling from "@/lib/store/hooks/useInfiniteScrolling";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Search from "./search/Search";
 
 interface IConnectionSeller {
   _id: string;
@@ -68,6 +69,10 @@ function Sellers() {
 
   return (
     <div className="w-full h-full p-3">
+      {phoneNumber !== "" && (
+        <Search userNumber={phoneNumber} userType={"customer"}></Search>
+      )}
+
       <ScrollArea className="w-full  h-full py-2 px-2 rounded-xl bg-slate-100">
         {datas?.map((data: IConnectionSeller) => (
           <Connection

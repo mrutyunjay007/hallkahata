@@ -4,11 +4,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import PaymentTracking from "./PaymentTracking";
 import axios from "axios";
-import { RiNotification2Fill } from "react-icons/ri";
+import { RiLoader4Fill, RiNotification2Fill } from "react-icons/ri";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { getDataFromToken } from "@/util/getDataFromToken";
 import { AddCurrentUserData } from "@/lib/store/features/auth/authSlice";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { IoSearchCircle } from "react-icons/io5";
 
 function TopBar() {
   const [youWillGet, setYouWillGet] = useState(0);
@@ -16,6 +18,7 @@ function TopBar() {
   const [notification, setNotification] = useState(false);
 
   const router = useRouter();
+  const [search, setSearch] = useState(false);
 
   const { iAmCustomer, phoneNumber } = useAppSelector((state) => state.auth);
 
@@ -44,7 +47,7 @@ function TopBar() {
   return (
     <>
       <div className=" flex gap-2 items-center justify-center w-full px-6 ">
-        <div className="flex gap-2 items-center w-full py-3">
+        <div className="flex w-full gap-2 items-center  py-3">
           <span className="size-10">
             <ProfilePic url=""></ProfilePic>
           </span>
@@ -52,6 +55,30 @@ function TopBar() {
             {`I'm a ${!iAmCustomer ? "Seller" : "Customer"}`}
           </span>
         </div>
+
+        {/* <div className=" w-full flex justify-center items-center border-2 border-primary gap-2 py-1 px-3 rounded-full  ">
+          <Input
+            placeholder="user name or phone number"
+            className="  px-4  border-none outline-none w-full font-poppins text-sm"
+            onChange={(e) => {
+              e?.preventDefault();
+              // setPhoneNumber(e.target.value);
+            }}
+          ></Input>
+          <span className=" h-full ">
+            {search ? (
+              <RiLoader4Fill className="size-7 text-bold text-blue-700 animate-spin" />
+            ) : (
+              <IoSearchCircle
+                className={`size-8   text-primary cursor-pointer `}
+                onClick={() => {
+                  // setSearch(false);
+                }}
+              />
+            )}
+          </span>
+        </div> */}
+
         <div
           className="relative  cursor-pointer"
           onClick={() => {

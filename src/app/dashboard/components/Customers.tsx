@@ -1,6 +1,7 @@
 import Connection from "@/components/Connection";
 import BallBounce from "@/components/Loaders/BallBounce";
 import DataLoader from "@/components/Loaders/DataLoader";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AddCurrentUserData } from "@/lib/store/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
@@ -8,7 +9,9 @@ import useInfiniteScrolling from "@/lib/store/hooks/useInfiniteScrolling";
 import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { RiAddCircleFill } from "react-icons/ri";
+import { IoSearchCircle } from "react-icons/io5";
+import { RiAddCircleFill, RiLoader4Fill } from "react-icons/ri";
+import Search from "./search/Search";
 
 interface IConnectionCustomer {
   _id: string;
@@ -69,7 +72,11 @@ function Customers() {
   }
 
   return (
-    <div className="relative w-full h-full p-3 ">
+    <div className="relative w-full h-full p-3 flex flex-col ">
+      {phoneNumber !== "" && (
+        <Search userNumber={phoneNumber} userType={"seller"}></Search>
+      )}
+
       <ScrollArea className="w-full  h-full py-2 px-2 rounded-xl bg-slate-100">
         {datas?.map((data: IConnectionCustomer) => (
           <Connection
@@ -94,11 +101,20 @@ function Customers() {
         )}
       </ScrollArea>
 
-      {phoneNumber !== "" && (
-        <Link href={`/addnewcutomer/${phoneNumber}`}>
-          <RiAddCircleFill className="size-16 fixed bottom-10 right-10 text-[#ffc300]  rounded-full hover:text-[#ffa600] hover:scale-110 hover:rotate-180 hover:ease-linear hover:duration-75 cursor-pointer " />
-        </Link>
-      )}
+      <span className=" flex flex-col justify-center items-center gap-2 fixed bottom-10 right-10">
+        {phoneNumber !== "" && (
+          <Link href={`/addnewcutomer/${phoneNumber}`}>
+            <RiAddCircleFill className="size-[3.47rem] text-[#ffc300]  rounded-full hover:text-[#ffa600] hover:scale-110 hover:rotate-180 hover:ease-linear hover:duration-75 cursor-pointer " />
+          </Link>
+        )}
+
+        {/* <IoSearchCircle
+          className={`size-[3.47rem]   text-primary cursor-pointer `}
+          onClick={() => {
+            // setSearch(false);
+          }}
+        /> */}
+      </span>
     </div>
   );
 }

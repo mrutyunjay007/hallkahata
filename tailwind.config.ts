@@ -100,6 +100,15 @@ const config = {
             animationTimingFunction: "cubic-bezier(0,0,0.2,1)",
           },
         },
+        placeholder_animation: {
+          "0%, 100%": {
+            left: "0",
+          },
+
+          "25%, 50%, 75%": {
+            left: "100%",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -108,7 +117,10 @@ const config = {
         one_rotation: "one_rotation 0.5s ease-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         jump: "jump 2s ease-out infinite",
+
+        placeholder_animation: "placeholder_animation 4s steps(7) infinite",
       },
+
       backgroundImage: {
         "zigzag-gradient":
           "repeating-linear-gradient(45deg,#ff0000 24px, transparent 0%)",

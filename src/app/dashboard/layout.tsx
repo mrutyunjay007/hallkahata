@@ -1,6 +1,7 @@
 import dbConnection from "@/lib/dbConnect";
 import TopBar from "./components/TopBar";
 import StoreProvider from "./StoreProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function HomeLayout({
   children,
@@ -13,6 +14,7 @@ export default function HomeLayout({
         <TopBar></TopBar>
         <div className="w-full h-full flex-1">{children}</div>
       </StoreProvider>
+      <Toaster></Toaster>
     </div>
   );
 }
